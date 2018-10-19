@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Dmitry Fillo</Authors>
+    <Company>Dmitry Fillo</Company>
+    <Product />
+    <Description>Reversed String.Format for URI path</Description>
+    <Copyright>Copyright © 2018 Dmitry Fillo</Copyright>
+    <PackageTags>url parse string.format scanf</PackageTags>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/DmitryFillo/UriPathScanf</RepositoryUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/DmitryFillo/UriPathScanf/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/DmitryFillo/UriPathScanf</PackageProjectUrl>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\dmitr\Documents\UriPathScanf\UriPathScanf\UriPathScanf.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\dmitr\Documents\UriPathScanf\UriPathScanf\UriPathScanf.xml</DocumentationFile>
+  </PropertyGroup>
+
+</Project>
