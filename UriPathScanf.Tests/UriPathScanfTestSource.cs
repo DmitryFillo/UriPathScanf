@@ -33,7 +33,7 @@ namespace UriPathScanf.Tests
                             { "varTwo", "second-ident" }
                         }
                     }
-                ).SetName("Check URL without trailing slash for case when double match can occur");
+                ).SetName("Check URI path without trailing slash for case when double match can occur");
 
                 yield return new TestCaseData(
                     descriptors,
@@ -47,7 +47,7 @@ namespace UriPathScanf.Tests
                             { "varTwo", "second-ident" }
                         }
                     }
-                ).SetName("Check URL with trailing slash for case when only one match can occur #1");
+                ).SetName("Check URI path with trailing slash for case when only one match can occur #1");
 
                 yield return new TestCaseData(
                     descriptors,
@@ -61,13 +61,13 @@ namespace UriPathScanf.Tests
                             { "varTwo", "second-ident" }
                         }
                     }
-                ).SetName("Check URL with trailing slash for case when only one match can occur #2");
+                ).SetName("Check URI path with trailing slash for case when only one match can occur #2");
 
                 yield return new TestCaseData(
                     descriptors,
                     "xx/shop/some-ident/second-ident/",
                     null
-                ).SetName("Check URL with trailing slash for case when no such URL");
+                ).SetName("Check URI path with trailing slash for case when no such URL");
 
                 yield return new TestCaseData(
                     descriptors,
@@ -82,7 +82,7 @@ namespace UriPathScanf.Tests
                             { "qs__a", "second-ident" }
                         }
                     }
-                ).SetName("Check URL with trailing slash for case with query string");
+                ).SetName("Check URI path with trailing slash for case with query string");
 
                 yield return new TestCaseData(
                     descriptors,
@@ -97,7 +97,7 @@ namespace UriPathScanf.Tests
                             { "qs__a", "second-ident" }
                         }
                     }
-                ).SetName("Check URL without trailing slash for case with query string");
+                ).SetName("Check URI path without trailing slash for case with query string");
 
                 yield return new TestCaseData(
                     descriptors,
@@ -112,7 +112,7 @@ namespace UriPathScanf.Tests
                             { "qs__a", "second-ident,b" }
                         }
                     }
-                ).SetName("Check URL without trailing slash for case with query string with multiple values for one variable");
+                ).SetName("Check URI path without trailing slash for case with query string with multiple values for one variable");
 
                 yield return new TestCaseData(
                     descriptors,
@@ -127,7 +127,7 @@ namespace UriPathScanf.Tests
                             { "qs__varOne", "second-ident" }
                         }
                     }
-                ).SetName("Check URL without trailing slash for case with query string has parameter with the same name as in linkFormat");
+                ).SetName("Check URI path without trailing slash for case with query string has parameter with the same name as in linkFormat");
 
                 yield return new TestCaseData(
                     descriptors,
@@ -142,7 +142,7 @@ namespace UriPathScanf.Tests
                             { "qs__varOne", "second-ident" }
                         }
                     }
-                ).SetName("Check URL with ignore case");
+                ).SetName("Check URI path with ignore case");
             }
         }
 
