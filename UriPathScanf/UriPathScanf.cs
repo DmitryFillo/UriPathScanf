@@ -8,16 +8,19 @@ using UriPathScanf.Attributes;
 
 namespace UriPathScanf
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// </summary>
     public class UriPathScanf : IUriPathScanf
     {
         private readonly Regex _placeholderRegex = new Regex(@"\{(\w+)\}");
         private readonly Regex _slashRegex = new Regex(@"/+");
 
-        private readonly LinkDescriptor[] _descriptors;
+        private readonly UriPathDescriptor[] _descriptors;
         private readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _methods
             = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
 
-        public UriPathScanf(IEnumerable<LinkDescriptor> descriptors)
+        public UriPathScanf(IEnumerable<UriPathDescriptor> descriptors)
         {
             // NOTE: to search longest link format first
             _descriptors = descriptors.OrderByDescending(d => d.Format.Split('/').Length).ToArray();
@@ -35,7 +38,7 @@ namespace UriPathScanf
                 {
                     var attrs = m.GetCustomAttributes(true);
 
-                    var attr = attrs.OfType<UrlMetaAttribute>().FirstOrDefault();
+                    var attr = attrs.OfType<UriMetaAttribute>().FirstOrDefault();
                     if (attr != null)
                     {
                         result.Add(attr.BindName, m);
@@ -46,9 +49,9 @@ namespace UriPathScanf
             }
         }
 
-        public UrlMetadata GetMetadata(string link)
+        public UriMetadata GetMeta(string link)
         {
-            var result = new UrlMetadata();
+            var result = new UriMetadata();
 
             var match = FindMatch(link);
 
@@ -71,7 +74,7 @@ namespace UriPathScanf
                     re.Add(name, value);
                 });
 
-                result.UrlType = linkType;
+                result.UriType = linkType;
                 result.Meta = re;
 
                 return result;
@@ -87,13 +90,13 @@ namespace UriPathScanf
                 prop.SetMethod.Invoke(metaResult, new object[] { value });
             });
             
-            result.UrlType = linkType;
+            result.UriType = linkType;
             result.Meta = metaResult;
 
             return result;
         }
 
-        protected (LinkDescriptor, IEnumerable<(string, string)>, string)? FindMatch(string link)
+        protected (UriPathDescriptor, IEnumerable<(string, string)>, string)? FindMatch(string link)
         {
             var qsName = "__qs__";
 

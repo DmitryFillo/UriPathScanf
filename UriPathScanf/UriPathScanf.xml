@@ -10,14 +10,14 @@
             Provides API to get metadata by URL itself.
             </summary>
         </member>
-        <member name="M:UriPathScanf.IUriPathScanf.GetMetadata(System.String)">
+        <member name="M:UriPathScanf.IUriPathScanf.GetMeta(System.String)">
             <summary>
             Gets Metadata by URL.
             </summary>
             <param name="link">URL</param>
             <returns></returns>
         </member>
-        <member name="T:UriPathScanf.LinkDescriptor">
+        <member name="T:UriPathScanf.UriPathDescriptor">
             <summary>
             
             </summary>

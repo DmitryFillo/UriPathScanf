@@ -16,17 +16,17 @@ namespace UriPathScanf.Tests
             {
                 var descriptors = new[]
                 {
-                    new LinkDescriptor("testLinkOne", "/shop/sales/{varOne}/{varTwo}/"),
-                    new LinkDescriptor("testLinkOne", "/sales/{varOne}/{varTwo}/"),
-                    new LinkDescriptor("testLinkTwo", "/shop/{varOne}/{varTwo}/"),
+                    new UriPathDescriptor("testLinkOne", "/shop/sales/{varOne}/{varTwo}/"),
+                    new UriPathDescriptor("testLinkOne", "/sales/{varOne}/{varTwo}/"),
+                    new UriPathDescriptor("testLinkTwo", "/shop/{varOne}/{varTwo}/"),
                 };
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident",
-                    new UrlMetadata
+                    new UriMetadata()
                     {
-                        UrlType = "testLinkOne",
+                        UriType = "testLinkOne",
                         Meta = new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
@@ -38,9 +38,9 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/sales/some-ident/second-ident/",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLinkOne",
+                        UriType = "testLinkOne",
                         Meta = new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
@@ -52,9 +52,9 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident/",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLinkTwo",
+                        UriType = "testLinkTwo",
                         Meta = new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
@@ -72,9 +72,9 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident/?a=second-ident",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLinkTwo",
+                        UriType = "testLinkTwo",
                         Meta = new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
@@ -87,9 +87,9 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident?a=second-ident",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLinkTwo",
+                        UriType = "testLinkTwo",
                         Meta = new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
@@ -102,9 +102,9 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident?a=second-ident&a=b",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLinkTwo",
+                        UriType = "testLinkTwo",
                         Meta = new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
@@ -117,9 +117,9 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident?varOne=second-ident",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLinkTwo",
+                        UriType = "testLinkTwo",
                         Meta = new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
@@ -138,15 +138,15 @@ namespace UriPathScanf.Tests
 
                 var descriptors = new[]
                 {
-                    new LinkDescriptor("testLink", "/shop/sales/{varOne}/{varTwo}/", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("testLink", "/shop/sales/{varOne}/{varTwo}/", typeof(TestTypedMetadata)),
                 };
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident/?a=3",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLink",
+                        UriType = "testLink",
                         Meta = new TestTypedMetadata
                         {
                             VarOne = "some-ident",
@@ -159,9 +159,9 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident/",
-                    new UrlMetadata
+                    new UriMetadata
                     {
-                        UrlType = "testLink",
+                        UriType = "testLink",
                         Meta = new TestTypedMetadata
                         {
                             VarOne = "some-ident",
@@ -181,13 +181,13 @@ namespace UriPathScanf.Tests
 
         public class TestTypedMetadata : IEquatable<TestTypedMetadata>
         {
-            [UrlMeta("varOne")]
+            [UriMeta("varOne")]
             public string VarOne { get; set; }
 
-            [UrlMeta("varTwo")]
+            [UriMeta("varTwo")]
             public string VarTwo { get; set; }
 
-            [UrlMeta("qs__a")]
+            [UriMeta("qs__a")]
             public string A { get; set; }
 
             public bool Equals(TestTypedMetadata other)

@@ -1,16 +1,15 @@
 ﻿namespace UriPathScanf
 {
     /// <summary>
-    /// URL parser.
-    /// Provides API to get metadata by URL itself.
+    /// URI parser, provides API to get metadata from URI paths
     /// </summary>
     public interface IUriPathScanf
     {
         /// <summary>
-        /// Gets Metadata by URL.
+        /// Gets meta by URI
         /// </summary>
-        /// <param name="link">URL</param>
+        /// <param name="link">URI path (w/o domain and proto)</param>
         /// <returns></returns>
-        UrlMetadata GetMetadata(string link);
+        UriMetadata GetMeta(string link);
     }
 }

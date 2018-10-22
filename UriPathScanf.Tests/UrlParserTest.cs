@@ -10,18 +10,18 @@ namespace UriPathScanf.Tests
     class UrlParserTest
     {
         [Test, TestCaseSource(typeof(UrlParserTestSource), nameof(UrlParserTestSource.NonTypedMetaTestCases))]
-        public void NonTypedMetaTest(LinkDescriptor[] linkDescriptors, string url, UrlMetadata expectedResult)
+        public void NonTypedMetaTest(UriPathDescriptor[] linkDescriptors, string url, UriMetadata expectedResult)
         {
             // Arrange
             var urlParser = new UriPathScanf(linkDescriptors);
 
             // Act
-            var result = urlParser.GetMetadata(url);
+            var result = urlParser.GetMeta(url);
 
             // Assert
             if (expectedResult != null)
             {
-                result.UrlType.Should().BeEquivalentTo(expectedResult.UrlType);
+                result.UriType.Should().BeEquivalentTo(expectedResult.UriType);
                 ((IDictionary<string, string>)result.Meta).Should().BeEquivalentTo(
                     (IDictionary<string, string>)expectedResult.Meta);
             }
@@ -32,18 +32,18 @@ namespace UriPathScanf.Tests
         }
 
         [Test, TestCaseSource(typeof(UrlParserTestSource), nameof(UrlParserTestSource.TypedMetaTestCases))]
-        public void TypedMetaTest(LinkDescriptor[] linkDescriptors, string url, UrlMetadata expectedResult)
+        public void TypedMetaTest(UriPathDescriptor[] linkDescriptors, string url, UriMetadata expectedResult)
         {
             // Arrange
             var urlParser = new UriPathScanf(linkDescriptors);
 
             // Act
-            var result = urlParser.GetMetadata(url);
+            var result = urlParser.GetMeta(url);
 
             // Assert
             if (expectedResult != null)
             {
-                result.UrlType.Should().BeEquivalentTo(expectedResult.UrlType);
+                result.UriType.Should().BeEquivalentTo(expectedResult.UriType);
                 ((UrlParserTestSource.TestTypedMetadata)result.Meta).Should().BeEquivalentTo(
                     (UrlParserTestSource.TestTypedMetadata)expectedResult.Meta);
             }
