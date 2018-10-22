@@ -6,10 +6,10 @@
     public interface IUriPathScanf
     {
         /// <summary>
-        /// Gets meta by URI
+        /// Gets meta by URI path
         /// </summary>
-        /// <param name="link">URI path (w/o domain and proto)</param>
+        /// <param name="uriPath">URI path (w/o domain and proto)</param>
         /// <returns></returns>
-        UriMetadata GetMeta(string link);
+        UriMetadata GetMeta(string uriPath);
     }
 }

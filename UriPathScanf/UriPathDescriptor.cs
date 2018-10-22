@@ -8,9 +8,9 @@ namespace UriPathScanf
     public class UriPathDescriptor
     {
         /// <summary>
-        /// Creates instance of URI path descriptor
+        /// Creates instances of URI path descriptors
         /// </summary>
-        /// <param name="type">Type name</param>
+        /// <param name="type">Type of given URI path</param>
         /// <param name="format">Format (<see cref="M:string.Format"/> reversed)</param>
         /// <param name="meta">Model that will be populated from given URI paths</param>
         public UriPathDescriptor(string type, string format, Type meta)
@@ -23,7 +23,7 @@ namespace UriPathScanf
         /// <summary>
         /// Creates instance of URI path descriptor
         /// </summary>
-        /// <param name="type">Type name</param>
+        /// <param name="type">Type of given URI path</param>
         /// <param name="format">Format (<see cref="M:string.Format"/> reversed)</param>
         public UriPathDescriptor(string type, string format)
         {
@@ -33,7 +33,7 @@ namespace UriPathScanf
         }
 
         /// <summary>
-        /// Type of descriptor
+        /// Type of descriptor (user defined)
         /// </summary>
         protected internal string Type { get; }
 
@@ -43,7 +43,7 @@ namespace UriPathScanf
         protected internal string Format { get; }
 
         /// <summary>
-        /// Type of model to be populated
+        /// <see cref="T:Type"/> of model to be populated
         /// </summary>
         protected internal Type Meta { get; }
     }

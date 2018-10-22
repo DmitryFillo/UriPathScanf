@@ -8,7 +8,7 @@ using UriPathScanf.Attributes;
 namespace UriPathScanf.Tests
 {
     [ExcludeFromCodeCoverage]
-    public static class UrlParserTestSource
+    internal static class UriPathScanfTestSource
     {
         public static IEnumerable NonTypedMetaTestCases
         {
@@ -128,6 +128,21 @@ namespace UriPathScanf.Tests
                         }
                     }
                 ).SetName("Check URL without trailing slash for case with query string has parameter with the same name as in linkFormat");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/sHOP/some-ident/second-ident?varOne=second-ident",
+                    new UriMetadata
+                    {
+                        UriType = "testLinkTwo",
+                        Meta = new Dictionary<string, string>
+                        {
+                            { "varOne", "some-ident" },
+                            { "varTwo", "second-ident" },
+                            { "qs__varOne", "second-ident" }
+                        }
+                    }
+                ).SetName("Check URL with ignore case");
             }
         }
 
@@ -135,7 +150,6 @@ namespace UriPathScanf.Tests
         {
             get
             {
-
                 var descriptors = new[]
                 {
                     new UriPathDescriptor("testLink", "/shop/sales/{varOne}/{varTwo}/", typeof(TestTypedMetadata)),

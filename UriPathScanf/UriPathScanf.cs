@@ -10,6 +10,7 @@ namespace UriPathScanf
 {
     /// <inheritdoc />
     /// <summary>
+    /// URI path parser
     /// </summary>
     public class UriPathScanf : IUriPathScanf
     {
@@ -20,21 +21,30 @@ namespace UriPathScanf
         private readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _methods
             = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
 
+        /// <summary>
+        /// Query string prefix
+        /// </summary>
+        protected const string QsPrefix = "qs__";
+
+        /// <summary>
+        /// Creates instances of <see cref="T:UriPathScanf"/>
+        /// </summary>
+        /// <param name="descriptors">URI paths descriptors</param>
         public UriPathScanf(IEnumerable<UriPathDescriptor> descriptors)
         {
-            // NOTE: to search longest link format first
-            _descriptors = descriptors.OrderByDescending(d => d.Format.Split('/').Length).ToArray();
+            // NOTE: to search longest uriPath format first
+            _descriptors = descriptors.OrderByDescending(d => d.Format.Aggregate(0, (acc, next) => next == '/' ? acc + 1 : acc)).ToArray();
 
             // NOTE: only for case when we need result model
             foreach (var d in _descriptors.Where(d => d.Meta != null))
             {
                 var result = new Dictionary<string, PropertyInfo>();
 
-                var stringProps = d.Meta
-                    .GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
-                    .Where(x => x.PropertyType == typeof(string));
+                var assignableProps = d.Meta
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(x => x.PropertyType.IsAssignableFrom(typeof(string)));
 
-                foreach (var m in stringProps)
+                foreach (var m in assignableProps)
                 {
                     var attrs = m.GetCustomAttributes(true);
 
@@ -49,11 +59,17 @@ namespace UriPathScanf
             }
         }
 
-        public UriMetadata GetMeta(string link)
+        /// <inheritdoc />
+        /// <summary>
+        /// Get URI path metadata
+        /// </summary>
+        /// <param name="uriPath">URI path</param>
+        /// <returns></returns>
+        public UriMetadata GetMeta(string uriPath)
         {
             var result = new UriMetadata();
 
-            var match = FindMatch(link);
+            var match = FindMatch(uriPath);
 
             if (!match.HasValue)
             {
@@ -94,72 +110,64 @@ namespace UriPathScanf
             result.Meta = metaResult;
 
             return result;
+
+            void PrepareResult(
+                IEnumerable<(string, string)> matches,
+                string qs,
+                Action<string, string> adder,
+                string qsPrefix = QsPrefix
+            )
+            {
+                foreach (var (name, value) in matches)
+                {
+                    adder(name, value);
+                }
+
+                var qsParsed = HttpUtility.ParseQueryString(qs);
+
+                if (qsParsed.Count <= 0)
+                    return;
+
+                foreach (var s in qsParsed.AllKeys)
+                {
+                    adder($"{qsPrefix}{s}", qsParsed[s]);
+                }
+            }
         }
 
-        protected (UriPathDescriptor, IEnumerable<(string, string)>, string)? FindMatch(string link)
+        /// <summary>
+        /// Finds match in descriptors
+        /// </summary>
+        /// <param name="uriPath">URI path</param>
+        /// <returns></returns>
+        protected (UriPathDescriptor, IEnumerable<(string, string)>, string)? FindMatch(string uriPath)
         {
-            var qsName = "__qs__";
-
             foreach (var descr in _descriptors)
             {
                 var format = descr.Format;
 
-                var groups = new HashSet<string>();
-
                 var regexString = _placeholderRegex
-                    .Replace(format, m =>
-                    {
-                        var g = m.Groups[1].Value;
-                        groups.Add(g);
-                        return "(?<" + g + ">.+)";
-                    }).TrimEnd('/');
-
-                if (groups.Contains(qsName))
-                {
-                    qsName += Math.Abs(qsName.GetHashCode());
-                }
+                    .Replace(format, m => "(?<" + m.Groups[1].Value + ">.+)")
+                    .TrimEnd('/');
 
                 // NOTE: right to left search regexp, so it starts with ^
                 regexString = _slashRegex.Replace(regexString, m => "/+");
-                regexString = $"^{regexString}";
-                regexString += $@"/*(?<{qsName}>\?+.+)*";
-                var formatRegex = new Regex(regexString, RegexOptions.RightToLeft);
+                regexString = $@"^{regexString}/*(\?+.+)*";
+                var formatRegex = new Regex(regexString, RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
 
-                var matches = formatRegex.Match(link);
+                var matches = formatRegex.Match(uriPath);
 
                 if (!matches.Success)
                     continue;
 
-                var urlMatches = formatRegex.GetGroupNames().Where(g => g != qsName && g != "0").Select(m => (m, matches.Groups[m].Value));
-                var queryString = matches.Groups[qsName].Value;
+                // NOTE: 1 is query string group (because of "right to left" regex)   
+                var urlMatches = formatRegex.GetGroupNames().Where(g => g != "1" && g != "0").Select(m => (m, matches.Groups[m].Value));
+                var queryString = matches.Groups[1].Value;
 
                 return (descr, urlMatches, queryString);
             }
 
             return null;
-        }
-
-        protected static void PrepareResult(
-            IEnumerable<(string, string)> urlMatches,
-            string queryString,
-            Action<string, string> adder,
-            string qsPrefix = "qs__"
-        )
-        {
-            foreach (var (name, value) in urlMatches)
-            {
-                adder(name, value);
-            }
-
-            var qsParsed = HttpUtility.ParseQueryString(queryString);
-
-            if (qsParsed.Count <= 0)
-                return;
-
-            foreach (var s in qsParsed.AllKeys)
-            {
-                adder($"{qsPrefix}{s}", qsParsed[s]);
-            }
         }
     }
 }

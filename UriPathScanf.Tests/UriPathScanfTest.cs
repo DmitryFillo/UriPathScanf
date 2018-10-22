@@ -7,9 +7,9 @@ namespace UriPathScanf.Tests
 {
     [ExcludeFromCodeCoverage]
     [TestFixture]
-    class UrlParserTest
+    internal class UriPathScanfTest
     {
-        [Test, TestCaseSource(typeof(UrlParserTestSource), nameof(UrlParserTestSource.NonTypedMetaTestCases))]
+        [Test, TestCaseSource(typeof(UriPathScanfTestSource), nameof(UriPathScanfTestSource.NonTypedMetaTestCases))]
         public void NonTypedMetaTest(UriPathDescriptor[] linkDescriptors, string url, UriMetadata expectedResult)
         {
             // Arrange
@@ -31,7 +31,7 @@ namespace UriPathScanf.Tests
             }
         }
 
-        [Test, TestCaseSource(typeof(UrlParserTestSource), nameof(UrlParserTestSource.TypedMetaTestCases))]
+        [Test, TestCaseSource(typeof(UriPathScanfTestSource), nameof(UriPathScanfTestSource.TypedMetaTestCases))]
         public void TypedMetaTest(UriPathDescriptor[] linkDescriptors, string url, UriMetadata expectedResult)
         {
             // Arrange
@@ -44,8 +44,8 @@ namespace UriPathScanf.Tests
             if (expectedResult != null)
             {
                 result.UriType.Should().BeEquivalentTo(expectedResult.UriType);
-                ((UrlParserTestSource.TestTypedMetadata)result.Meta).Should().BeEquivalentTo(
-                    (UrlParserTestSource.TestTypedMetadata)expectedResult.Meta);
+                ((UriPathScanfTestSource.TestTypedMetadata)result.Meta).Should().BeEquivalentTo(
+                    (UriPathScanfTestSource.TestTypedMetadata)expectedResult.Meta);
             }
             else
             {

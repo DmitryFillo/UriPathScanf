@@ -4,23 +4,127 @@
         <name>UriPathScanf</name>
     </assembly>
     <members>
+        <member name="T:UriPathScanf.Attributes.UriMetaAttribute">
+            <inheritdoc />
+            <summary>
+            Populates property from URI path
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.Attributes.UriMetaAttribute.BindName">
+            <summary>
+            Specifies name to bind
+            </summary>
+        </member>
+        <member name="M:UriPathScanf.Attributes.UriMetaAttribute.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Populates property from URI path
+            </summary>
+            <param name="bindName">Name in the URI path, e.g. /{bindName}/...</param>
+        </member>
         <member name="T:UriPathScanf.IUriPathScanf">
             <summary>
-            URL parser.
-            Provides API to get metadata by URL itself.
+            URI parser, provides API to get metadata from URI paths
             </summary>
         </member>
         <member name="M:UriPathScanf.IUriPathScanf.GetMeta(System.String)">
             <summary>
-            Gets Metadata by URL.
+            Gets meta by URI path
             </summary>
-            <param name="link">URL</param>
+            <param name="uriPath">URI path (w/o domain and proto)</param>
             <returns></returns>
+        </member>
+        <member name="T:UriPathScanf.UriMetadata">
+            <inheritdoc />
+            <summary>
+            Describes URI path
+            </summary>
+        </member>
+        <member name="M:UriPathScanf.UriMetadata.Equals(UriPathScanf.UriMetadata)">
+            <inheritdoc />
+        </member>
+        <member name="M:UriPathScanf.UriMetadata.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:UriPathScanf.UriMetadata.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="P:UriPathScanf.UriMetadata.UriType">
+            <summary>
+            Type of URI path (user defined)
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.UriMetadata.Meta">
+            <summary>
+            URI path metadata model
+            </summary>
         </member>
         <member name="T:UriPathScanf.UriPathDescriptor">
             <summary>
-            
+            Describes URI path
             </summary>
+        </member>
+        <member name="M:UriPathScanf.UriPathDescriptor.#ctor(System.String,System.String,System.Type)">
+            <summary>
+            Creates instances of URI path descriptors
+            </summary>
+            <param name="type">Type of given URI path</param>
+            <param name="format">Format (<see cref="M:string.Format"/> reversed)</param>
+            <param name="meta">Model that will be populated from given URI paths</param>
+        </member>
+        <member name="M:UriPathScanf.UriPathDescriptor.#ctor(System.String,System.String)">
+            <summary>
+            Creates instance of URI path descriptor
+            </summary>
+            <param name="type">Type of given URI path</param>
+            <param name="format">Format (<see cref="M:string.Format"/> reversed)</param>
+        </member>
+        <member name="P:UriPathScanf.UriPathDescriptor.Type">
+            <summary>
+            Type of descriptor (user defined)
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.UriPathDescriptor.Format">
+            <summary>
+            Descriptor format (<see cref="M:string.Format"/> reversed)
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.UriPathDescriptor.Meta">
+            <summary>
+            <see cref="T:Type"/> of model to be populated
+            </summary>
+        </member>
+        <member name="T:UriPathScanf.UriPathScanf">
+            <inheritdoc />
+            <summary>
+            URI path parser
+            </summary>
+        </member>
+        <member name="F:UriPathScanf.UriPathScanf.QsPrefix">
+            <summary>
+            Query string prefix
+            </summary>
+        </member>
+        <member name="M:UriPathScanf.UriPathScanf.#ctor(System.Collections.Generic.IEnumerable{UriPathScanf.UriPathDescriptor})">
+            <summary>
+            Creates instances of <see cref="T:UriPathScanf"/>
+            </summary>
+            <param name="descriptors">URI paths descriptors</param>
+        </member>
+        <member name="M:UriPathScanf.UriPathScanf.GetMeta(System.String)">
+            <inheritdoc />
+            <summary>
+            Get URI path metadata
+            </summary>
+            <param name="uriPath">URI path</param>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriPathScanf.FindMatch(System.String)">
+            <summary>
+            Finds match in descriptors
+            </summary>
+            <param name="uriPath">URI path</param>
+            <returns></returns>
         </member>
     </members>
 </doc>

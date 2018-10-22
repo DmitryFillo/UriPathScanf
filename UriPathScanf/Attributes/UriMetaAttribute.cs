@@ -4,7 +4,7 @@ namespace UriPathScanf.Attributes
 {
     /// <inheritdoc />
     /// <summary>
-    /// Populates property from URI
+    /// Populates property from URI path
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public class UriMetaAttribute : Attribute
@@ -16,7 +16,7 @@ namespace UriPathScanf.Attributes
 
         /// <inheritdoc />
         /// <summary>
-        /// Populates property from URI 
+        /// Populates property from URI path
         /// </summary>
         /// <param name="bindName">Name in the URI path, e.g. /{bindName}/...</param>
         public UriMetaAttribute(string bindName)

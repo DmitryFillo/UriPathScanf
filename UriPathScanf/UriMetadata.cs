@@ -45,12 +45,12 @@ namespace UriPathScanf
         }
 
         /// <summary>
-        /// Type of URI
+        /// Type of URI path (user defined)
         /// </summary>
         public string UriType { get; set; }
 
         /// <summary>
-        /// URI path metadata
+        /// URI path metadata model
         /// </summary>
         public object Meta { get; set; }
     }
