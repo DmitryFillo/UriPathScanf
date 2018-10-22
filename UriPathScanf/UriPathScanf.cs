@@ -24,7 +24,7 @@ namespace UriPathScanf
         /// <summary>
         /// Query string prefix
         /// </summary>
-        protected const string QsPrefix = "qs__";
+        protected readonly string QsPrefix = "qs__";
 
         /// <summary>
         /// Creates instances of <see cref="T:UriPathScanf"/>
@@ -33,7 +33,7 @@ namespace UriPathScanf
         public UriPathScanf(IEnumerable<UriPathDescriptor> descriptors)
         {
             // NOTE: to search longest uriPath format first
-            _descriptors = descriptors.OrderByDescending(d => d.Format.Aggregate(0, (acc, next) => next == '/' ? acc + 1 : acc)).ToArray();
+            _descriptors = descriptors.OrderByDescending(d => d.Format.ToCharArray().Aggregate(0, (acc, next) => next == '/' ? acc + 1 : acc)).ToArray();
 
             // NOTE: only for case when we need result model
             foreach (var d in _descriptors.Where(d => d.Meta != null))
@@ -41,8 +41,9 @@ namespace UriPathScanf
                 var result = new Dictionary<string, PropertyInfo>();
 
                 var assignableProps = d.Meta
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                    .Where(x => x.PropertyType.IsAssignableFrom(typeof(string)));
+                    .GetTypeInfo()
+                    .DeclaredProperties
+                    .Where(x => x.PropertyType.GetTypeInfo().IsAssignableFrom(typeof(string).GetTypeInfo()));
 
                 foreach (var m in assignableProps)
                 {
@@ -51,7 +52,7 @@ namespace UriPathScanf
                     var attr = attrs.OfType<UriMetaAttribute>().FirstOrDefault();
                     if (attr != null)
                     {
-                        result.Add(attr.BindName, m);
+                        result.Add(attr.IsQueryString ? QsPrefix + attr.BindName : attr.BindName, m);
                     }
                 }
 
@@ -114,8 +115,7 @@ namespace UriPathScanf
             void PrepareResult(
                 IEnumerable<(string, string)> matches,
                 string qs,
-                Action<string, string> adder,
-                string qsPrefix = QsPrefix
+                Action<string, string> adder
             )
             {
                 foreach (var (name, value) in matches)
@@ -130,7 +130,7 @@ namespace UriPathScanf
 
                 foreach (var s in qsParsed.AllKeys)
                 {
-                    adder($"{qsPrefix}{s}", qsParsed[s]);
+                    adder($"{QsPrefix}{s}", qsParsed[s]);
                 }
             }
         }

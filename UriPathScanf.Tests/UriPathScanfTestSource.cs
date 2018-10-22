@@ -152,12 +152,12 @@ namespace UriPathScanf.Tests
             {
                 var descriptors = new[]
                 {
-                    new UriPathDescriptor("testLink", "/shop/sales/{varOne}/{varTwo}/", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("testLink", "/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", typeof(TestTypedMetadata)),
                 };
 
                 yield return new TestCaseData(
                     descriptors,
-                    "/shop/sales/some-ident/second-ident/?a=3",
+                    "/shop/sales/some-ident/second-ident/x/a?a=3",
                     new UriMetadata
                     {
                         UriType = "testLink",
@@ -172,7 +172,7 @@ namespace UriPathScanf.Tests
 
                 yield return new TestCaseData(
                     descriptors,
-                    "/shop/sales/some-ident/second-ident/",
+                    "/shop/sales/some-ident/second-ident/x/three-ident",
                     new UriMetadata
                     {
                         UriType = "testLink",
@@ -180,20 +180,52 @@ namespace UriPathScanf.Tests
                         {
                             VarOne = "some-ident",
                             VarTwo = "second-ident",
-                            A = null
                         }
                     }
                 ).SetName("Check typed meta for case without query string");
 
                 yield return new TestCaseData(
                     descriptors,
-                    "/sshop/sales/some-ident/second-ident/",
+                    "/sshop/sales/some-ident/second-ident/x",
                     null
-                ).SetName("Check typed meta for case when no match");
+                ).SetName("Check typed meta for case when no match #1");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/shop/sales/some-ident/second-ident/",
+                    null
+                ).SetName("Check typed meta for case when no match #2");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/shop/sales/some-ident/second-ident/three-ident",
+                    null
+                ).SetName("Check typed meta for case when no match #3");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/shop/sales/3/2/x/1/?b=132",
+                    new UriMetadata
+                    {
+                        UriType = "testLink",
+                        Meta = new TestTypedMetadata
+                        {
+                            VarOne = "3",
+                            VarTwo = "2",
+                            B = 132.ToString()
+                        }
+                    }
+                ).SetName("Check typed meta for case without not query string params and assigning to the object");
             }
         }
 
-        public class TestTypedMetadata : IEquatable<TestTypedMetadata>
+        public class TestTypedMetadataBase
+        {
+            [UriMeta("varInherit")]
+            public string VarInherit { get; set; }
+        }
+
+        public class TestTypedMetadata : TestTypedMetadataBase, IEquatable<TestTypedMetadata>
         {
             [UriMeta("varOne")]
             public string VarOne { get; set; }
@@ -201,8 +233,11 @@ namespace UriPathScanf.Tests
             [UriMeta("varTwo")]
             public string VarTwo { get; set; }
 
-            [UriMeta("qs__a")]
+            [UriMetaQuery("a")]
             public string A { get; set; }
+
+            [UriMeta("qs__b")]
+            public object B { get; set; }
 
             public bool Equals(TestTypedMetadata other)
             {
@@ -243,6 +278,6 @@ namespace UriPathScanf.Tests
                 return !Equals(left, right);
             }
         }
-
+        
     }
 }

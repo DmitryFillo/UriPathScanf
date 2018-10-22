@@ -15,4 +15,4 @@ How to use
 
 TBD
 
-TODO: check props other than string for typed meta, e.g. object
+TODO: support same metadata for different uri descriptors, check attr inheritance

@@ -39,7 +39,7 @@ namespace UriPathScanf.Tests
 
             // Act
             var result = urlParser.GetMeta(url);
-
+            
             // Assert
             if (expectedResult != null)
             {

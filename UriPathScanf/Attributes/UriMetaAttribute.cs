@@ -14,6 +14,11 @@ namespace UriPathScanf.Attributes
         /// </summary>
         protected internal string BindName { get; }
 
+        /// <summary>
+        /// If true it's query string
+        /// </summary>
+        protected internal bool IsQueryString { get; }
+
         /// <inheritdoc />
         /// <summary>
         /// Populates property from URI path
@@ -22,6 +27,34 @@ namespace UriPathScanf.Attributes
         public UriMetaAttribute(string bindName)
         {
             BindName = bindName;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Populates property from URI path
+        /// </summary>
+        /// <param name="bindName">Name in the URI path, e.g. /{bindName}/...</param>
+        /// <param name="isQueryString">If true then match should be for query string</param>
+        internal UriMetaAttribute(string bindName, bool isQueryString)
+        {
+            BindName = bindName;
+            IsQueryString = isQueryString;
+        }
+    }
+
+    /// <summary>
+    /// Populates property from URI query string
+    /// </summary>
+    public class UriMetaQueryAttribute : UriMetaAttribute
+    {
+        /// <inheritdoc />
+        /// <summary>
+        /// Populates property from URI query string
+        /// </summary>
+        /// <param name="bindName">Name in the URI path, e.g. /{bindName}/...</param>
+        public UriMetaQueryAttribute(string bindName) : base(bindName, true)
+        {
+
         }
     }
 }

@@ -15,10 +15,35 @@
             Specifies name to bind
             </summary>
         </member>
+        <member name="P:UriPathScanf.Attributes.UriMetaAttribute.IsQueryString">
+            <summary>
+            If true it's query string
+            </summary>
+        </member>
         <member name="M:UriPathScanf.Attributes.UriMetaAttribute.#ctor(System.String)">
             <inheritdoc />
             <summary>
             Populates property from URI path
+            </summary>
+            <param name="bindName">Name in the URI path, e.g. /{bindName}/...</param>
+        </member>
+        <member name="M:UriPathScanf.Attributes.UriMetaAttribute.#ctor(System.String,System.Boolean)">
+            <inheritdoc />
+            <summary>
+            Populates property from URI path
+            </summary>
+            <param name="bindName">Name in the URI path, e.g. /{bindName}/...</param>
+            <param name="isQueryString">If true then match should be for query string</param>
+        </member>
+        <member name="T:UriPathScanf.Attributes.UriMetaQueryAttribute">
+            <summary>
+            Populates property from URI query string
+            </summary>
+        </member>
+        <member name="M:UriPathScanf.Attributes.UriMetaQueryAttribute.#ctor(System.String)">
+            <inheritdoc />
+            <summary>
+            Populates property from URI query string
             </summary>
             <param name="bindName">Name in the URI path, e.g. /{bindName}/...</param>
         </member>
