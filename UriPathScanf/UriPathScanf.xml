@@ -36,6 +36,7 @@
             <param name="isQueryString">If true then match should be for query string</param>
         </member>
         <member name="T:UriPathScanf.Attributes.UriMetaQueryAttribute">
+            <inheritdoc />
             <summary>
             Populates property from URI query string
             </summary>
@@ -74,6 +75,22 @@
         <member name="M:UriPathScanf.UriMetadata.GetHashCode">
             <inheritdoc />
         </member>
+        <member name="M:UriPathScanf.UriMetadata.op_Equality(UriPathScanf.UriMetadata,UriPathScanf.UriMetadata)">
+            <summary>
+            Equals operator
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriMetadata.op_Inequality(UriPathScanf.UriMetadata,UriPathScanf.UriMetadata)">
+            <summary>
+            Not equals operator
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
         <member name="P:UriPathScanf.UriMetadata.UriType">
             <summary>
             Type of URI path (user defined)
@@ -85,6 +102,7 @@
             </summary>
         </member>
         <member name="T:UriPathScanf.UriPathDescriptor">
+            <inheritdoc />
             <summary>
             Describes URI path
             </summary>
@@ -118,6 +136,31 @@
             <summary>
             <see cref="T:Type"/> of model to be populated
             </summary>
+        </member>
+        <member name="M:UriPathScanf.UriPathDescriptor.Equals(UriPathScanf.UriPathDescriptor)">
+            <inheritdoc />
+        </member>
+        <member name="M:UriPathScanf.UriPathDescriptor.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:UriPathScanf.UriPathDescriptor.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:UriPathScanf.UriPathDescriptor.op_Equality(UriPathScanf.UriPathDescriptor,UriPathScanf.UriPathDescriptor)">
+            <summary>
+            Equals operator
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriPathDescriptor.op_Inequality(UriPathScanf.UriPathDescriptor,UriPathScanf.UriPathDescriptor)">
+            <summary>
+            Not equals operator
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
         </member>
         <member name="T:UriPathScanf.UriPathScanf">
             <inheritdoc />

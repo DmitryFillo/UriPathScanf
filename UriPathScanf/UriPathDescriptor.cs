@@ -2,10 +2,11 @@
 
 namespace UriPathScanf
 {
+    /// <inheritdoc />
     /// <summary>
     /// Describes URI path
     /// </summary>
-    public class UriPathDescriptor
+    public class UriPathDescriptor : IEquatable<UriPathDescriptor>
     {
         /// <summary>
         /// Creates instances of URI path descriptors
@@ -46,5 +47,47 @@ namespace UriPathScanf
         /// <see cref="T:Type"/> of model to be populated
         /// </summary>
         protected internal Type Meta { get; }
+
+        /// <inheritdoc />
+        public bool Equals(UriPathDescriptor other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return string.Equals(Format, other.Format);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((UriPathDescriptor) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode() => (Format != null ? Format.GetHashCode() : 0);
+
+        /// <summary>
+        /// Equals operator
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator ==(UriPathDescriptor left, UriPathDescriptor right)
+        {
+            return Equals(left, right);
+        }
+
+        /// <summary>
+        /// Not equals operator
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator !=(UriPathDescriptor left, UriPathDescriptor right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

@@ -14,5 +14,3 @@ How to use
 ==========
 
 TBD
-
-TODO: support same metadata for different uri descriptors, check attr inheritance

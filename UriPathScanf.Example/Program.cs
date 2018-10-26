@@ -1,4 +1,5 @@
 ﻿using System;
+using UriPathScanf;
 
 namespace UriPathScanf.Example
 {
@@ -6,7 +7,7 @@ namespace UriPathScanf.Example
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+
         }
     }
 }

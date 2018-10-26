@@ -18,8 +18,8 @@ namespace UriPathScanf
         private readonly Regex _slashRegex = new Regex(@"/+");
 
         private readonly UriPathDescriptor[] _descriptors;
-        private readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _methods
-            = new Dictionary<Type, Dictionary<string, PropertyInfo>>();
+        private readonly Dictionary<UriPathDescriptor, Dictionary<string, PropertyInfo>> _methods
+            = new Dictionary<UriPathDescriptor, Dictionary<string, PropertyInfo>>();
 
         /// <summary>
         /// Query string prefix
@@ -47,7 +47,7 @@ namespace UriPathScanf
 
                 foreach (var m in assignableProps)
                 {
-                    var attrs = m.GetCustomAttributes(true);
+                    var attrs = m.GetCustomAttributes();
 
                     var attr = attrs.OfType<UriMetaAttribute>().FirstOrDefault();
                     if (attr != null)
@@ -56,7 +56,14 @@ namespace UriPathScanf
                     }
                 }
 
-                _methods.Add(d.Meta, result);
+                try
+                {
+                    _methods.Add(d, result);
+                }
+                catch (ArgumentException)
+                {
+                    // NOTE: do not fail on duplicates
+                }
             }
         }
 
@@ -77,19 +84,17 @@ namespace UriPathScanf
                 return null;
             }
 
-            var (linkFormat, urlMatches, queryString) = match.Value;
+            var (descriptor, urlMatches, queryString) = match.Value;
 
-            var linkType = linkFormat.Type;
-            var metaType = linkFormat.Meta;
+            var linkType = descriptor.Type;
+            var metaType = descriptor.Meta;
 
+            // NOTE: if dictionary instead of user defined type
             if (metaType == null)
             {
                 var re = new Dictionary<string, string>();
 
-                PrepareResult(urlMatches, queryString, (name, value) =>
-                {
-                    re.Add(name, value);
-                });
+                PrepareResult(urlMatches, queryString, re.Add);
 
                 result.UriType = linkType;
                 result.Meta = re;
@@ -98,39 +103,35 @@ namespace UriPathScanf
             }
 
             var metaResult = Activator.CreateInstance(metaType);
-            var methods = _methods[metaType];
 
-            PrepareResult(urlMatches, queryString, (name, value) =>
-            {
-                if (!methods.TryGetValue(name, out var prop)) return;
+            PrepareResult(urlMatches, queryString, AddToMeta);
 
-                prop.SetMethod.Invoke(metaResult, new object[] { value });
-            });
-            
             result.UriType = linkType;
             result.Meta = metaResult;
 
             return result;
 
+            void AddToMeta(string name, string value)
+            {
+                if (!_methods[descriptor].TryGetValue(name, out var prop)) return;
+                prop.SetMethod.Invoke(metaResult, new object[] { value });
+            }
+
             void PrepareResult(
                 IEnumerable<(string, string)> matches,
                 string qs,
-                Action<string, string> adder
-            )
+                Action<string, string> add)
             {
                 foreach (var (name, value) in matches)
                 {
-                    adder(name, value);
+                    add(name, value);
                 }
 
                 var qsParsed = HttpUtility.ParseQueryString(qs);
 
-                if (qsParsed.Count <= 0)
-                    return;
-
                 foreach (var s in qsParsed.AllKeys)
                 {
-                    adder($"{QsPrefix}{s}", qsParsed[s]);
+                    add(QsPrefix + s, qsParsed[s]);
                 }
             }
         }

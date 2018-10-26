@@ -33,16 +33,22 @@ namespace UriPathScanf
                 return ((UriType != null ? UriType.GetHashCode() : 0) * 397) ^ (Meta != null ? Meta.GetHashCode() : 0);
             }
         }
-         
-        public static bool operator ==(UriMetadata left, UriMetadata right)
-        {
-            return Equals(left, right);
-        }
 
-        public static bool operator !=(UriMetadata left, UriMetadata right)
-        {
-            return !Equals(left, right);
-        }
+        /// <summary>
+        /// Equals operator
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator ==(UriMetadata left, UriMetadata right) => Equals(left, right);
+
+        /// <summary>
+        /// Not equals operator
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator !=(UriMetadata left, UriMetadata right) => !Equals(left, right);
 
         /// <summary>
         /// Type of URI path (user defined)

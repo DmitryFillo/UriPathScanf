@@ -42,6 +42,7 @@ namespace UriPathScanf.Attributes
         }
     }
 
+    /// <inheritdoc />
     /// <summary>
     /// Populates property from URI query string
     /// </summary>

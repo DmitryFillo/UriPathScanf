@@ -14,13 +14,23 @@ namespace UriPathScanf.Tests
         {
             get
             {
+                // Arrange
+                var descr = new UriPathDescriptor("testLinkTwo", "/shop/{varOne}/{varTwo}/");
                 var descriptors = new[]
                 {
                     new UriPathDescriptor("testLinkOne", "/shop/sales/{varOne}/{varTwo}/"),
                     new UriPathDescriptor("testLinkOne", "/sales/{varOne}/{varTwo}/"),
-                    new UriPathDescriptor("testLinkTwo", "/shop/{varOne}/{varTwo}/"),
+
+                    // NOTE: test for duplicates, it should be OK
+                    descr,
+                    descr,
+
+                    // NOTE: should be escaped, because key is format URI path
+                    new UriPathDescriptor("testLinkOne2", "/shop/sales/{varOne}/{varTwo}/"),
+                    new UriPathDescriptor("testLinkOne2", "/sales/{varOne}/{varTwo}/"),
                 };
 
+                // Test case data
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident",
@@ -150,11 +160,24 @@ namespace UriPathScanf.Tests
         {
             get
             {
+                // Arrange
+                var descr = new UriPathDescriptor("testLinkWithSameMetadata", "/shop/selas/{varOne}/{varTwo}/x/{varInherit}//", typeof(TestTypedMetadata));
+
                 var descriptors = new[]
                 {
                     new UriPathDescriptor("testLink", "/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", typeof(TestTypedMetadata)),
+
+                    // NOTE: test for duplicates, it should be OK
+                    descr,
+                    descr,
+
+                    new UriPathDescriptor("testLinkAttrInheritance", "/shop/sales/{varOne}/{varTwo}/y/{varInheritTwo}//", typeof(TestTypedMetadata)),
+
+                    // NOTE: should be escaped, because key is format URI path
+                    new UriPathDescriptor("testLink2", "/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", typeof(TestTypedMetadata)),
                 };
 
+                // Test case data
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident/x/a?a=3",
@@ -216,6 +239,42 @@ namespace UriPathScanf.Tests
                         }
                     }
                 ).SetName("Check typed meta for case without not query string params and assigning to the object");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/shop/selas/3/2/x/1/////?b=132",
+                    new UriMetadata
+                    {
+                        UriType = "testLinkWithSameMetadata",
+                        Meta = new TestTypedMetadata
+                        {
+                            VarOne = "3",
+                            VarTwo = "2",
+                            B = 132.ToString()
+                        }
+                    }
+                ).SetName("Check typed meta for another type with same metadata model and with many trailing slashes");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/shop/sales/3/2/y/1?b=132",
+                    new UriMetadata
+                    {
+                        UriType = "testLinkAttrInheritance",
+                        Meta = new TestTypedMetadata
+                        {
+                            VarOne = "3",
+                            VarTwo = "2",
+                            B = 132.ToString()
+                        }
+                    }
+                ).SetName("Check typed meta attribute inheritance");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/shop/lases/some-ident/second-ident/x/three-ident",
+                    null
+                ).SetName("Check typed meta for case when structure of URI path is the same as in the descriptor, but static parts of path are different");
             }
         }
 
@@ -223,6 +282,9 @@ namespace UriPathScanf.Tests
         {
             [UriMeta("varInherit")]
             public string VarInherit { get; set; }
+
+            [UriMeta("varInheritTwo")]
+            public string VarInheritTwo { get; set; }
         }
 
         public class TestTypedMetadata : TestTypedMetadataBase, IEquatable<TestTypedMetadata>
@@ -239,22 +301,26 @@ namespace UriPathScanf.Tests
             [UriMeta("qs__b")]
             public object B { get; set; }
 
+            /// <summary>
+            /// Attribute inheritance, will work OK
+            /// </summary>
+            public new string VarInheritTwo { get; set; }
+
             public bool Equals(TestTypedMetadata other)
             {
-                if (ReferenceEquals(null, other))
-                    return false;
-                if (ReferenceEquals(this, other))
-                    return true;
-                return string.Equals(VarOne, other.VarOne) && string.Equals(VarTwo, other.VarTwo) && string.Equals(A, other.A);
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return string.Equals(VarOne, other.VarOne) && string.Equals(VarTwo, other.VarTwo) &&
+                       string.Equals(A, other.A) && Equals(B, other.B) &&
+                       string.Equals(VarInheritTwo, other.VarInheritTwo);
             }
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj))
-                    return false;
-                if (ReferenceEquals(this, obj))
-                    return true;
-                return obj.GetType() == GetType() && Equals((TestTypedMetadata)obj);
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != GetType()) return false;
+                return Equals((TestTypedMetadata) obj);
             }
 
             public override int GetHashCode()
@@ -264,6 +330,8 @@ namespace UriPathScanf.Tests
                     var hashCode = (VarOne != null ? VarOne.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (VarTwo != null ? VarTwo.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (A != null ? A.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (B != null ? B.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (VarInheritTwo != null ? VarInheritTwo.GetHashCode() : 0);
                     return hashCode;
                 }
             }
