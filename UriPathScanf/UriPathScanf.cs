@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Web;
+using Microsoft.AspNetCore.WebUtilities;
 using UriPathScanf.Attributes;
 
 namespace UriPathScanf
@@ -89,12 +89,22 @@ namespace UriPathScanf
             var linkType = descriptor.Type;
             var metaType = descriptor.Meta;
 
+            var queryStringParsed = QueryHelpers.ParseQuery(queryString);
+
             // NOTE: if dictionary instead of user defined type
             if (metaType == null)
             {
                 var re = new Dictionary<string, string>();
 
-                PrepareResult(urlMatches, queryString, re.Add);
+                foreach (var (name, value) in urlMatches)
+                {
+                    re.Add(name, value);
+                }
+
+                foreach (var s in queryStringParsed)
+                {
+                    re.Add(QsPrefix + s.Key, s.Value);
+                }
 
                 result.UriType = linkType;
                 result.Meta = re;
@@ -104,7 +114,15 @@ namespace UriPathScanf
 
             var metaResult = Activator.CreateInstance(metaType);
 
-            PrepareResult(urlMatches, queryString, AddToMeta);
+            foreach (var (name, value) in urlMatches)
+            {
+                AddToMeta(name, value);
+            }
+
+            foreach (var s in queryStringParsed)
+            {
+                AddToMeta(QsPrefix + s.Key, s.Value);
+            }
 
             result.UriType = linkType;
             result.Meta = metaResult;
@@ -115,24 +133,6 @@ namespace UriPathScanf
             {
                 if (!_methods[descriptor].TryGetValue(name, out var prop)) return;
                 prop.SetMethod.Invoke(metaResult, new object[] { value });
-            }
-
-            void PrepareResult(
-                IEnumerable<(string, string)> matches,
-                string qs,
-                Action<string, string> add)
-            {
-                foreach (var (name, value) in matches)
-                {
-                    add(name, value);
-                }
-
-                var qsParsed = HttpUtility.ParseQueryString(qs);
-
-                foreach (var s in qsParsed.AllKeys)
-                {
-                    add(QsPrefix + s, qsParsed[s]);
-                }
             }
         }
 
