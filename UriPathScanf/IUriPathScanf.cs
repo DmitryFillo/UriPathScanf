@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="uriPath">URI path (w/o domain and proto)</param>
         /// <returns></returns>
-        UriMetadata GetMeta(string uriPath);
+        UriMetadata Scan(string uriPath);
     }
 }

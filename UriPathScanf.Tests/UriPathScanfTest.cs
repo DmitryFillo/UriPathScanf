@@ -16,7 +16,7 @@ namespace UriPathScanf.Tests
             var urlParser = new UriPathScanf(linkDescriptors);
 
             // Act
-            var result = urlParser.GetMeta(url);
+            var result = urlParser.Scan(url);
 
             // Assert
             if (expectedResult != null)
@@ -38,7 +38,7 @@ namespace UriPathScanf.Tests
             var urlParser = new UriPathScanf(linkDescriptors);
 
             // Act
-            var result = urlParser.GetMeta(url);
+            var result = urlParser.Scan(url);
             
             // Assert
             if (expectedResult != null)

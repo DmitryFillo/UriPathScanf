@@ -73,7 +73,7 @@ namespace UriPathScanf
         /// </summary>
         /// <param name="uriPath">URI path</param>
         /// <returns></returns>
-        public UriMetadata GetMeta(string uriPath)
+        public UriMetadata Scan(string uriPath)
         {
             var result = new UriMetadata();
 

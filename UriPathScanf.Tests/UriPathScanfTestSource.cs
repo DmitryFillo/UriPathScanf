@@ -176,6 +176,9 @@ namespace UriPathScanf.Tests
 
                     // NOTE: should be escaped, because key is format URI path
                     new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", "testLink2", typeof(TestTypedMetadata)),
+
+                    // NOTE: duplicates var name, should be first, also uses "_" for placeholder (no such var in the model)
+                    new UriPathDescriptor("/shop/{_}/{varOne}/{varTwo}/{varTwo}/{varInherit}//", "testLink2", typeof(TestTypedMetadata)),
                 };
 
                 // Test case data
@@ -273,9 +276,24 @@ namespace UriPathScanf.Tests
 
                 yield return new TestCaseData(
                     descriptors,
-                    "/shop/lases/some-ident/second-ident/x/three-ident",
+                    "/shopp/lases/some-ident/second-ident/x/three-ident",
                     null
                 ).SetName("Check typed meta for case when structure of URI path is the same as in the descriptor, but static parts of path are different");
+
+                yield return new TestCaseData(
+                    descriptors,
+                    "/shop/xxxx/some-ident/second-ident/yet_another_ident/a?a=3",
+                    new UriMetadata
+                    {
+                        UriType = "testLink2",
+                        Meta = new TestTypedMetadata
+                        {
+                            VarOne = "some-ident",
+                            VarTwo = "second-ident",
+                            A = "3"
+                        }
+                    }
+                ).SetName("Check typed meta for case when placeholder is used and duplicate var name in the format string");
             }
         }
 

@@ -53,7 +53,7 @@
             URI parser, provides API to get metadata from URI paths
             </summary>
         </member>
-        <member name="M:UriPathScanf.IUriPathScanf.GetMeta(System.String)">
+        <member name="M:UriPathScanf.IUriPathScanf.Scan(System.String)">
             <summary>
             Gets meta by URI path
             </summary>
@@ -179,7 +179,7 @@
             </summary>
             <param name="descriptors">URI paths descriptors</param>
         </member>
-        <member name="M:UriPathScanf.UriPathScanf.GetMeta(System.String)">
+        <member name="M:UriPathScanf.UriPathScanf.Scan(System.String)">
             <inheritdoc />
             <summary>
             Get URI path metadata
