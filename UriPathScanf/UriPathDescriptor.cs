@@ -14,7 +14,7 @@ namespace UriPathScanf
         /// <param name="type">Type of given URI path</param>
         /// <param name="format">Format (<see cref="M:string.Format"/> reversed)</param>
         /// <param name="meta">Model that will be populated from given URI paths</param>
-        public UriPathDescriptor(string type, string format, Type meta)
+        public UriPathDescriptor(string format, string type, Type meta)
         {
             Type = type;
             Format = format;
@@ -26,7 +26,7 @@ namespace UriPathScanf
         /// </summary>
         /// <param name="type">Type of given URI path</param>
         /// <param name="format">Format (<see cref="M:string.Format"/> reversed)</param>
-        public UriPathDescriptor(string type, string format)
+        public UriPathDescriptor(string format, string type)
         {
             Type = type;
             Format = format;

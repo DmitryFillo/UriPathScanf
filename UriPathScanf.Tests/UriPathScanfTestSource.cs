@@ -15,19 +15,19 @@ namespace UriPathScanf.Tests
             get
             {
                 // Arrange
-                var descr = new UriPathDescriptor("testLinkTwo", "/shop/{varOne}/{varTwo}/");
+                var descr = new UriPathDescriptor("/shop/{varOne}/{varTwo}/", "testLinkTwo");
                 var descriptors = new[]
                 {
-                    new UriPathDescriptor("testLinkOne", "/shop/sales/{varOne}/{varTwo}/"),
-                    new UriPathDescriptor("testLinkOne", "/sales/{varOne}/{varTwo}/"),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/", "testLinkOne"),
+                    new UriPathDescriptor("/sales/{varOne}/{varTwo}/", "testLinkOne"),
 
                     // NOTE: test for duplicates, it should be OK
                     descr,
                     descr,
 
                     // NOTE: should be escaped, because key is format URI path
-                    new UriPathDescriptor("testLinkOne2", "/shop/sales/{varOne}/{varTwo}/"),
-                    new UriPathDescriptor("testLinkOne2", "/sales/{varOne}/{varTwo}/"),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/", "testLinkOne2"),
+                    new UriPathDescriptor("/sales/{varOne}/{varTwo}/", "testLinkOne2"),
                 };
 
                 // Test case data
@@ -161,20 +161,21 @@ namespace UriPathScanf.Tests
             get
             {
                 // Arrange
-                var descr = new UriPathDescriptor("testLinkWithSameMetadata", "/shop/selas/{varOne}/{varTwo}/x/{varInherit}//", typeof(TestTypedMetadata));
+                var descr = new UriPathDescriptor("/shop/selas/{varOne}/{varTwo}/x/{varInherit}//",
+                    "testLinkWithSameMetadata", typeof(TestTypedMetadata));
 
                 var descriptors = new[]
                 {
-                    new UriPathDescriptor("testLink", "/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", "testLink", typeof(TestTypedMetadata)),
 
                     // NOTE: test for duplicates, it should be OK
                     descr,
                     descr,
 
-                    new UriPathDescriptor("testLinkAttrInheritance", "/shop/sales/{varOne}/{varTwo}/y/{varInheritTwo}//", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/y/{varInheritTwo}//", "testLinkAttrInheritance", typeof(TestTypedMetadata)),
 
                     // NOTE: should be escaped, because key is format URI path
-                    new UriPathDescriptor("testLink2", "/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", "testLink2", typeof(TestTypedMetadata)),
                 };
 
                 // Test case data
