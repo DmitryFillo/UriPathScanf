@@ -5,7 +5,7 @@
     </assembly>
     <members>
         <member name="T:UriPathScanf.Attributes.UriMetaAttribute">
-            <inheritdoc />
+            <inheritdoc cref="T:System.Attribute" />
             <summary>
             Populates property from URI path
             </summary>
@@ -66,6 +66,23 @@
             Describes URI path
             </summary>
         </member>
+        <member name="P:UriPathScanf.UriMetadata.UriType">
+            <summary>
+            Type of URI path (user defined)
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.UriMetadata.Meta">
+            <summary>
+            URI path metadata model
+            </summary>
+        </member>
+        <member name="M:UriPathScanf.UriMetadata.#ctor(System.String,System.Object)">
+            <summary>
+            Creates URI metadata instance
+            </summary>
+            <param name="uriType">Type of URI path (user defined)</param>
+            <param name="meta">URI path metadata model</param>
+        </member>
         <member name="M:UriPathScanf.UriMetadata.Equals(UriPathScanf.UriMetadata)">
             <inheritdoc />
         </member>
@@ -90,16 +107,6 @@
             <param name="left"></param>
             <param name="right"></param>
             <returns></returns>
-        </member>
-        <member name="P:UriPathScanf.UriMetadata.UriType">
-            <summary>
-            Type of URI path (user defined)
-            </summary>
-        </member>
-        <member name="P:UriPathScanf.UriMetadata.Meta">
-            <summary>
-            URI path metadata model
-            </summary>
         </member>
         <member name="T:UriPathScanf.UriPathDescriptor">
             <inheritdoc />
@@ -168,11 +175,6 @@
             URI path parser
             </summary>
         </member>
-        <member name="F:UriPathScanf.UriPathScanf.QsPrefix">
-            <summary>
-            Query string prefix
-            </summary>
-        </member>
         <member name="M:UriPathScanf.UriPathScanf.#ctor(System.Collections.Generic.IEnumerable{UriPathScanf.UriPathDescriptor})">
             <summary>
             Creates instances of <see cref="T:UriPathScanf"/>
@@ -192,6 +194,13 @@
             Finds match in descriptors
             </summary>
             <param name="uriPath">URI path</param>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriPathScanf.GetQueryStringBindingName(System.String)">
+            <summary>
+            Gets bind name for query string
+            </summary>
+            <param name="qsParamName">Query string param name</param>
             <returns></returns>
         </member>
     </members>

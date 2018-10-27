@@ -2,7 +2,7 @@
 
 namespace UriPathScanf.Attributes
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="Attribute" />
     /// <summary>
     /// Populates property from URI path
     /// </summary>

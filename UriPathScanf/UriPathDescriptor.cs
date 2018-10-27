@@ -61,8 +61,7 @@ namespace UriPathScanf
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((UriPathDescriptor) obj);
+            return obj.GetType() == GetType() && Equals((UriPathDescriptor) obj);
         }
 
         /// <inheritdoc />

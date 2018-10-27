@@ -34,43 +34,34 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident",
-                    new UriMetadata()
-                    {
-                        UriType = "testLinkOne",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkOne", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path without trailing slash for case when double match can occur");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/sales/some-ident/second-ident/",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkOne",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkOne", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path with trailing slash for case when only one match can occur #1");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident/",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkTwo",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkTwo", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path with trailing slash for case when only one match can occur #2");
 
                 yield return new TestCaseData(
@@ -82,76 +73,61 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident/?a=second-ident",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkTwo",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkTwo", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" },
                             { "qs__a", "second-ident" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path with trailing slash for case with query string");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident?a=second-ident",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkTwo",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkTwo", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" },
                             { "qs__a", "second-ident" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path without trailing slash for case with query string");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident?a=second-ident&a=b",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkTwo",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkTwo", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" },
                             { "qs__a", "second-ident,b" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path without trailing slash for case with query string with multiple values for one variable");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/some-ident/second-ident?varOne=second-ident",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkTwo",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkTwo", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" },
                             { "qs__varOne", "second-ident" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path without trailing slash for case with query string has parameter with the same name as in linkFormat");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/sHOP/some-ident/second-ident?varOne=second-ident",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkTwo",
-                        Meta = new Dictionary<string, string>
+                    new UriMetadata("testLinkTwo", new Dictionary<string, string>
                         {
                             { "varOne", "some-ident" },
                             { "varTwo", "second-ident" },
                             { "qs__varOne", "second-ident" }
                         }
-                    }
+                    )
                 ).SetName("Check URI path with ignore case");
             }
         }
@@ -185,30 +161,24 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident/x/a?a=3",
-                    new UriMetadata
-                    {
-                        UriType = "testLink",
-                        Meta = new TestTypedMetadata
+                    new UriMetadata("testLink", new TestTypedMetadata
                         {
                             VarOne = "some-ident",
                             VarTwo = "second-ident",
                             A = "3"
                         }
-                    }
+                    )
                 ).SetName("Check typed meta for case with query string");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/some-ident/second-ident/x/three-ident",
-                    new UriMetadata
-                    {
-                        UriType = "testLink",
-                        Meta = new TestTypedMetadata
+                    new UriMetadata("testLink", new TestTypedMetadata
                         {
                             VarOne = "some-ident",
                             VarTwo = "second-ident",
                         }
-                    }
+                    )
                 ).SetName("Check typed meta for case without query string");
 
                 yield return new TestCaseData(
@@ -232,46 +202,37 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/3/2/x/1/?b=132",
-                    new UriMetadata
-                    {
-                        UriType = "testLink",
-                        Meta = new TestTypedMetadata
+                    new UriMetadata("testLink", new TestTypedMetadata
                         {
                             VarOne = "3",
                             VarTwo = "2",
                             B = 132.ToString()
                         }
-                    }
+                    )
                 ).SetName("Check typed meta for case without not query string params and assigning to the object");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/selas/3/2/x/1/////?b=132",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkWithSameMetadata",
-                        Meta = new TestTypedMetadata
+                    new UriMetadata("testLinkWithSameMetadata", new TestTypedMetadata
                         {
                             VarOne = "3",
                             VarTwo = "2",
                             B = 132.ToString()
                         }
-                    }
+                    )
                 ).SetName("Check typed meta for another type with same metadata model and with many trailing slashes");
 
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/sales/3/2/y/1?b=132",
-                    new UriMetadata
-                    {
-                        UriType = "testLinkAttrInheritance",
-                        Meta = new TestTypedMetadata
+                    new UriMetadata("testLinkAttrInheritance", new TestTypedMetadata
                         {
                             VarOne = "3",
                             VarTwo = "2",
                             B = 132.ToString()
                         }
-                    }
+                    )
                 ).SetName("Check typed meta attribute inheritance");
 
                 yield return new TestCaseData(
@@ -283,16 +244,13 @@ namespace UriPathScanf.Tests
                 yield return new TestCaseData(
                     descriptors,
                     "/shop/xxxx/some-ident/second-ident/yet_another_ident/a?a=3",
-                    new UriMetadata
-                    {
-                        UriType = "testLink2",
-                        Meta = new TestTypedMetadata
+                    new UriMetadata("testLink2", new TestTypedMetadata
                         {
                             VarOne = "some-ident",
                             VarTwo = "second-ident",
                             A = "3"
                         }
-                    }
+                    )
                 ).SetName("Check typed meta for case when placeholder is used and duplicate var name in the format string");
             }
         }
@@ -314,6 +272,12 @@ namespace UriPathScanf.Tests
             [UriMeta("varTwo")]
             public string VarTwo { get; set; }
 
+            /// <summary>
+            /// Test duplicate keys, should be avoided
+            /// </summary>
+            [UriMeta("varTwo")]
+            public string VarTwo2 { get; set; }
+
             [UriMetaQuery("a")]
             public string A { get; set; }
 
@@ -330,7 +294,7 @@ namespace UriPathScanf.Tests
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
                 return string.Equals(VarOne, other.VarOne) && string.Equals(VarTwo, other.VarTwo) &&
-                       string.Equals(A, other.A) && Equals(B, other.B) &&
+                       string.Equals(VarTwo2, other.VarTwo2) && string.Equals(A, other.A) && Equals(B, other.B) &&
                        string.Equals(VarInheritTwo, other.VarInheritTwo);
             }
 
@@ -338,8 +302,7 @@ namespace UriPathScanf.Tests
             {
                 if (ReferenceEquals(null, obj)) return false;
                 if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != GetType()) return false;
-                return Equals((TestTypedMetadata) obj);
+                return obj.GetType() == GetType() && Equals((TestTypedMetadata) obj);
             }
 
             public override int GetHashCode()
@@ -348,6 +311,7 @@ namespace UriPathScanf.Tests
                 {
                     var hashCode = (VarOne != null ? VarOne.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (VarTwo != null ? VarTwo.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (VarTwo2 != null ? VarTwo2.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (A != null ? A.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (B != null ? B.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (VarInheritTwo != null ? VarInheritTwo.GetHashCode() : 0);

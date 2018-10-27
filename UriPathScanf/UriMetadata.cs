@@ -8,6 +8,27 @@ namespace UriPathScanf
     /// </summary>
     public class UriMetadata : IEquatable<UriMetadata>
     {
+        /// <summary>
+        /// Type of URI path (user defined)
+        /// </summary>
+        public string UriType { get; }
+
+        /// <summary>
+        /// URI path metadata model
+        /// </summary>
+        public object Meta { get; }
+
+        /// <summary>
+        /// Creates URI metadata instance
+        /// </summary>
+        /// <param name="uriType">Type of URI path (user defined)</param>
+        /// <param name="meta">URI path metadata model</param>
+        public UriMetadata(string uriType, object meta)
+        {
+            UriType = uriType;
+            Meta = meta;
+        }
+
         /// <inheritdoc />
         public bool Equals(UriMetadata other)
         {
@@ -22,7 +43,7 @@ namespace UriPathScanf
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((UriMetadata) obj);
+            return Equals((UriMetadata)obj);
         }
 
         /// <inheritdoc />
@@ -49,15 +70,5 @@ namespace UriPathScanf
         /// <param name="right"></param>
         /// <returns></returns>
         public static bool operator !=(UriMetadata left, UriMetadata right) => !Equals(left, right);
-
-        /// <summary>
-        /// Type of URI path (user defined)
-        /// </summary>
-        public string UriType { get; set; }
-
-        /// <summary>
-        /// URI path metadata model
-        /// </summary>
-        public object Meta { get; set; }
     }
 }

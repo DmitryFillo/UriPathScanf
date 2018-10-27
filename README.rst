@@ -14,5 +14,4 @@ You can describe URI path like ``/some/path/{id}/some.html`` and parse it to the
 How to use
 ==========
 
-TODO: query string path (get rid of multiple if statements)
 TBD

@@ -22,11 +22,6 @@ namespace UriPathScanf
             = new Dictionary<UriPathDescriptor, Dictionary<string, PropertyInfo>>();
 
         /// <summary>
-        /// Query string prefix
-        /// </summary>
-        protected readonly string QsPrefix = "qs__";
-
-        /// <summary>
         /// Creates instances of <see cref="T:UriPathScanf"/>
         /// </summary>
         /// <param name="descriptors">URI paths descriptors</param>
@@ -50,9 +45,18 @@ namespace UriPathScanf
                     var attrs = m.GetCustomAttributes();
 
                     var attr = attrs.OfType<UriMetaAttribute>().FirstOrDefault();
-                    if (attr != null)
+
+                    if (attr == null) continue;
+
+                    var name = attr.IsQueryString ? GetQueryStringBindingName(attr.BindName) : attr.BindName;
+
+                    try
                     {
-                        result.Add(attr.IsQueryString ? QsPrefix + attr.BindName : attr.BindName, m);
+                        result.Add(name, m);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // NOTE: do not fail on duplicates
                     }
                 }
 
@@ -75,8 +79,6 @@ namespace UriPathScanf
         /// <returns></returns>
         public UriMetadata Scan(string uriPath)
         {
-            var result = new UriMetadata();
-
             var match = FindMatch(uriPath);
 
             if (!match.HasValue)
@@ -103,13 +105,10 @@ namespace UriPathScanf
 
                 foreach (var s in queryStringParsed)
                 {
-                    re.Add(QsPrefix + s.Key, s.Value);
+                    re.Add(GetQueryStringBindingName(s.Key), s.Value);
                 }
 
-                result.UriType = linkType;
-                result.Meta = re;
-
-                return result;
+                return new UriMetadata(linkType, re);
             }
 
             var metaResult = Activator.CreateInstance(metaType);
@@ -121,13 +120,10 @@ namespace UriPathScanf
 
             foreach (var s in queryStringParsed)
             {
-                AddToMeta(QsPrefix + s.Key, s.Value);
+                AddToMeta(GetQueryStringBindingName(s.Key), s.Value);
             }
 
-            result.UriType = linkType;
-            result.Meta = metaResult;
-
-            return result;
+            return new UriMetadata(linkType, metaResult);
 
             void AddToMeta(string name, string value)
             {
@@ -170,5 +166,12 @@ namespace UriPathScanf
 
             return null;
         }
+
+        /// <summary>
+        /// Gets bind name for query string
+        /// </summary>
+        /// <param name="qsParamName">Query string param name</param>
+        /// <returns></returns>
+        protected string GetQueryStringBindingName(string qsParamName) => "qs__" + qsParamName;
     }
 }
