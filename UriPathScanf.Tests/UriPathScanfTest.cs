@@ -19,17 +19,20 @@ namespace UriPathScanf.Tests
 
             // Act
             var result = urlParser.Scan(url);
+            var resultTyped = urlParser.ScanDict(url);
 
             // Assert
             if (expectedResult != null)
             {
                 result.UriType.Should().BeEquivalentTo(expectedResult.UriType);
                 result.Type.Should().Be(expectedResult.Type);
-                result.AsDictionary.Should().BeEquivalentTo(expectedResult.AsDictionary);
+                result.AsDict.Should().BeEquivalentTo(expectedResult.AsDict);
+                resultTyped.Meta.Should().BeEquivalentTo(expectedResult.Meta);
             }
             else
             {
                 result.Should().BeNull();
+                resultTyped.Should().BeNull();
             }
         }
 
@@ -42,7 +45,8 @@ namespace UriPathScanf.Tests
 
             // Act
             var result = urlParser.Scan(url);
-            
+            var resultTyped = urlParser.Scan<UriPathScanfTestSource.TestTypedMetadata>(url);
+
             // Assert
             if (expectedResult != null)
             {
@@ -50,11 +54,33 @@ namespace UriPathScanf.Tests
                 result.Type.Should().Be(expectedResult.Type);
                 result.As<UriPathScanfTestSource.TestTypedMetadata>().Should()
                     .BeEquivalentTo(expectedResult.As<UriPathScanfTestSource.TestTypedMetadata>());
+                resultTyped.Meta.Should().BeEquivalentTo(expectedResult.Meta);
             }
             else
             {
                 result.Should().BeNull();
+                resultTyped.Should().BeNull();
             }
+        }
+
+        [Test]
+        public void NonScanTypeTest()
+        {
+            // Arrange
+            const string uri = "/xxx/";
+
+            var urlParser = new UriPathScanf(new []
+            {
+                new UriPathDescriptor(uri, "xxx", typeof(UriPathScanfTestSource.TestTypedMetadata)), 
+            });
+
+            // Act
+            var resultTyped = urlParser.Scan<UriPathScanfTestSource.TestTypedMetadataFake>(uri);
+            var resultDictTyped = urlParser.ScanDict(uri);
+
+            // Assert
+            resultTyped.Should().BeNull();
+            resultDictTyped.Should().BeNull();
         }
     }
 }

@@ -95,7 +95,7 @@ namespace UriPathScanf
         /// </summary>
         /// <param name="uriPath">URI path</param>
         /// <returns></returns>
-        public UriMetadata Scan<T>(string uriPath) where T: class, IUriPathMetaModel
+        public UriMetadata<T> Scan<T>(string uriPath) where T: class, IUriPathMetaModel
         {
             var match = FindMatch(uriPath);
 
@@ -103,7 +103,7 @@ namespace UriPathScanf
 
             var (descriptor, _, _) = match.Value;
 
-            return descriptor.Meta != typeof(T) ? null : GetTypedMeta(match.Value);
+            return descriptor.Meta != typeof(T) ? null : (UriMetadata<T>) GetTypedMeta(match.Value);
         }
 
         /// <inheritdoc />
@@ -112,7 +112,7 @@ namespace UriPathScanf
         /// </summary>
         /// <param name="uriPath">URI path</param>
         /// <returns></returns>
-        public UriMetadata ScanDict(string uriPath)
+        public UriMetadata<IDictionary<string, string>> ScanDict(string uriPath)
         {
             var match = FindMatch(uriPath);
 
@@ -120,7 +120,7 @@ namespace UriPathScanf
 
             var (descriptor, _, _) = match.Value;
 
-            return descriptor.Meta == null ? GetDictMeta(match.Value) : null;
+            return descriptor.Meta == null ? (UriMetadata<IDictionary<string, string>>) GetDictMeta(match.Value) : null;
         }
 
         private UriMetadata GetDictMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
@@ -139,7 +139,7 @@ namespace UriPathScanf
                 re.Add(GetQueryStringBindingName(s.Key), s.Value);
             }
 
-            return new UriMetadata(descriptor.Type, re);
+            return new UriMetadata(descriptor.Type, re) { Type = typeof(Dictionary<string, string>) };
         }
 
         private UriMetadata GetTypedMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)

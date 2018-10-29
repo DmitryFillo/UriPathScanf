@@ -1,4 +1,6 @@
-﻿namespace UriPathScanf
+﻿using System.Collections.Generic;
+
+namespace UriPathScanf
 {
     /// <summary>
     /// URI parser, provides API to get metadata from URI paths
@@ -18,13 +20,13 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="uriPath"></param>
         /// <returns></returns>
-        UriMetadata Scan<T>(string uriPath) where T : class, IUriPathMetaModel;
+        UriMetadata<T> Scan<T>(string uriPath) where T : class, IUriPathMetaModel;
 
         /// <summary>
         /// Gets meta by URI path
         /// </summary>
         /// <param name="uriPath"></param>
         /// <returns></returns>
-        UriMetadata ScanDict(string uriPath);
+        UriMetadata<IDictionary<string, string>> ScanDict(string uriPath);
     }
 }

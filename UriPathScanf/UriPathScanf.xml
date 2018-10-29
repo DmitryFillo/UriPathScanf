@@ -50,7 +50,7 @@
         </member>
         <member name="T:UriPathScanf.IUriPathMetaModel">
             <summary>
-            Marks model that it can be used to cast from <see cref="P:UriPathScanf.UriMetadata.Meta"/>
+            Marks model that it can be used to cast from <see cref="!:UriMetadata.Meta"/>
             </summary>
         </member>
         <member name="T:UriPathScanf.IUriPathScanf">
@@ -80,57 +80,40 @@
             <param name="uriPath"></param>
             <returns></returns>
         </member>
-        <member name="T:UriPathScanf.UriMetadata">
+        <member name="T:UriPathScanf.UriMetadata`1">
             <inheritdoc />
             <summary>
             Describes URI path
             </summary>
-        </member>
-        <member name="P:UriPathScanf.UriMetadata.UriType">
-            <summary>
-            Type of URI path (user defined)
-            </summary>
-        </member>
-        <member name="P:UriPathScanf.UriMetadata.Meta">
-            <summary>
-            URI path metadata model
-            </summary>
-        </member>
-        <member name="P:UriPathScanf.UriMetadata.Type">
-            <summary>
-            Type of <see cref="P:UriPathScanf.UriMetadata.Meta"/>
-            </summary>
-        </member>
-        <member name="P:UriPathScanf.UriMetadata.AsDictionary">
-            <summary>
-            Converts <see cref="P:UriPathScanf.UriMetadata.Meta"/> to dictionary. If it's typed meta then null will be returned
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:UriPathScanf.UriMetadata.As``1">
-            <summary>
-            Cast <see cref="P:UriPathScanf.UriMetadata.Meta"/> to type
-            </summary>
             <typeparam name="T"></typeparam>
-            <returns></returns>
         </member>
-        <member name="M:UriPathScanf.UriMetadata.#ctor(System.String,System.Object)">
+        <member name="M:UriPathScanf.UriMetadata`1.#ctor(System.String,`0)">
             <summary>
             Creates URI metadata instance
             </summary>
             <param name="uriType">Type of URI path (user defined)</param>
             <param name="meta">URI path metadata model</param>
         </member>
-        <member name="M:UriPathScanf.UriMetadata.Equals(UriPathScanf.UriMetadata)">
+        <member name="P:UriPathScanf.UriMetadata`1.UriType">
+            <summary>
+            Type of URI path (user defined)
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.UriMetadata`1.Meta">
+            <summary>
+            URI path metadata model
+            </summary>
+        </member>
+        <member name="M:UriPathScanf.UriMetadata`1.Equals(UriPathScanf.UriMetadata{`0})">
             <inheritdoc />
         </member>
-        <member name="M:UriPathScanf.UriMetadata.Equals(System.Object)">
+        <member name="M:UriPathScanf.UriMetadata`1.Equals(System.Object)">
             <inheritdoc />
         </member>
-        <member name="M:UriPathScanf.UriMetadata.GetHashCode">
+        <member name="M:UriPathScanf.UriMetadata`1.GetHashCode">
             <inheritdoc />
         </member>
-        <member name="M:UriPathScanf.UriMetadata.op_Equality(UriPathScanf.UriMetadata,UriPathScanf.UriMetadata)">
+        <member name="M:UriPathScanf.UriMetadata`1.op_Equality(UriPathScanf.UriMetadata{`0},UriPathScanf.UriMetadata{`0})">
             <summary>
             Equals operator
             </summary>
@@ -138,13 +121,46 @@
             <param name="right"></param>
             <returns></returns>
         </member>
-        <member name="M:UriPathScanf.UriMetadata.op_Inequality(UriPathScanf.UriMetadata,UriPathScanf.UriMetadata)">
+        <member name="M:UriPathScanf.UriMetadata`1.op_Inequality(UriPathScanf.UriMetadata{`0},UriPathScanf.UriMetadata{`0})">
             <summary>
             Not equals operator
             </summary>
             <param name="left"></param>
             <param name="right"></param>
             <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriMetadata`1.op_Explicit(UriPathScanf.UriMetadata)~UriPathScanf.UriMetadata{`0}">
+            <summary>
+            Cast to <see cref="T:UriPathScanf.UriMetadata`1"/>
+            </summary>
+            <param name="v"></param>
+        </member>
+        <member name="T:UriPathScanf.UriMetadata">
+            <inheritdoc />
+            <summary>
+            Describes URI path
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.UriMetadata.Type">
+            <summary>
+            Type of <see cref="P:UriPathScanf.UriMetadata`1.Meta"/>
+            </summary>
+        </member>
+        <member name="P:UriPathScanf.UriMetadata.AsDict">
+            <summary>
+            Converts <see cref="P:UriPathScanf.UriMetadata`1.Meta"/> to dictionary. If it's typed meta then null will be returned
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriMetadata.As``1">
+            <summary>
+            Cast <see cref="P:UriPathScanf.UriMetadata`1.Meta"/> to type
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriMetadata.#ctor(System.String,System.Object)">
+            <inheritdoc />
         </member>
         <member name="T:UriPathScanf.UriPathDescriptor">
             <inheritdoc />

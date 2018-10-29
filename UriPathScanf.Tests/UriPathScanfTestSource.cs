@@ -40,6 +40,7 @@ namespace UriPathScanf.Tests
                             { "varTwo", "second-ident" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path without trailing slash for case when double match can occur");
 
                 yield return new TestCaseData(
@@ -51,6 +52,7 @@ namespace UriPathScanf.Tests
                             { "varTwo", "second-ident" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path with trailing slash for case when only one match can occur #1");
 
                 yield return new TestCaseData(
@@ -62,6 +64,7 @@ namespace UriPathScanf.Tests
                             { "varTwo", "second-ident" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path with trailing slash for case when only one match can occur #2");
 
                 yield return new TestCaseData(
@@ -80,6 +83,7 @@ namespace UriPathScanf.Tests
                             { "qs__a", "second-ident" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path with trailing slash for case with query string");
 
                 yield return new TestCaseData(
@@ -92,6 +96,7 @@ namespace UriPathScanf.Tests
                             { "qs__a", "second-ident" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path without trailing slash for case with query string");
 
                 yield return new TestCaseData(
@@ -104,6 +109,7 @@ namespace UriPathScanf.Tests
                             { "qs__a", "second-ident,b" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path without trailing slash for case with query string with multiple values for one variable");
 
                 yield return new TestCaseData(
@@ -116,6 +122,7 @@ namespace UriPathScanf.Tests
                             { "qs__varOne", "second-ident" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path without trailing slash for case with query string has parameter with the same name as in linkFormat");
 
                 yield return new TestCaseData(
@@ -128,6 +135,7 @@ namespace UriPathScanf.Tests
                             { "qs__varOne", "second-ident" }
                         }
                     )
+                    { Type = typeof(Dictionary<string, string>) }
                 ).SetName("Check URI path with ignore case");
             }
         }
@@ -269,6 +277,11 @@ namespace UriPathScanf.Tests
 
             [UriMeta("varInheritTwo")]
             public string VarInheritTwo { get; set; }
+        }
+
+        public class TestTypedMetadataFake : IUriPathMetaModel
+        {
+
         }
 
         public class TestTypedMetadata : TestTypedMetadataBase, IEquatable<TestTypedMetadata>, IUriPathMetaModel
