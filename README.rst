@@ -14,7 +14,10 @@ You can describe URI path like ``/some/path/{id}/some.html`` and parse it to the
 Motivation
 ==========
 
-TBD
+This package is useful for you if:
+
+* If you need to get metadata (identifiers) from URI paths, e.g. to provide API to not to couple some parts of the system with UI specific information.
+* If you're going to encode data in "URI path format", e.g. ``/{identifierOne}/{identifierTwo}``, and then you're going to decode them to ``IDictionary<string, string>`` or models.
 
 How to use
 ==========
