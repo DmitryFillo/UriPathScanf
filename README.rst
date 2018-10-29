@@ -6,6 +6,9 @@ URI path scanf
      :target: https://travis-ci.com/DmitryFillo/UriPathScanf
 
 TBD: scan -> scanAll; scanDict -> scan; tryCast -> tryCastToDict
+TBD: nuget pkg rc
+TBD: logo
+TBD: nuget pkg release
 
 Reversed String.Format for URI path.
 
