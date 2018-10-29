@@ -16,8 +16,8 @@ Motivation
 
 This package is useful for you if:
 
-* If you need to get metadata (identifiers) from URI paths, e.g. to provide API to not to couple some parts of the system with UI specific information.
-* If you're going to encode data in "URI path format", e.g. ``/{identifierOne}/{identifierTwo}``, and then you're going to decode them to ``IDictionary<string, string>`` or models.
+* You need to get metadata (identifiers) from URI paths, e.g. to provide API to not to couple some parts of the system with UI specific information.
+* You're going to encode data in "URI path format", e.g. ``/{identifierOne}/{identifierTwo}``, and then you're going to decode them to ``IDictionary<string, string>`` or models.
 
 How to use
 ==========
