@@ -19,5 +19,12 @@
         /// <param name="uriPath"></param>
         /// <returns></returns>
         UriMetadata Scan<T>(string uriPath) where T : class, IUriPathMetaModel;
+
+        /// <summary>
+        /// Gets meta by URI path
+        /// </summary>
+        /// <param name="uriPath"></param>
+        /// <returns></returns>
+        UriMetadata ScanDict(string uriPath);
     }
 }

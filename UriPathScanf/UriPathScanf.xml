@@ -65,6 +65,21 @@
             <param name="uriPath">URI path (w/o domain and proto)</param>
             <returns></returns>
         </member>
+        <member name="M:UriPathScanf.IUriPathScanf.Scan``1(System.String)">
+            <summary>
+            Gets meta by URI path
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="uriPath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.IUriPathScanf.ScanDict(System.String)">
+            <summary>
+            Gets meta by URI path
+            </summary>
+            <param name="uriPath"></param>
+            <returns></returns>
+        </member>
         <member name="T:UriPathScanf.UriMetadata">
             <inheritdoc />
             <summary>
@@ -205,6 +220,22 @@
             <param name="descriptors">URI paths descriptors</param>
         </member>
         <member name="M:UriPathScanf.UriPathScanf.Scan(System.String)">
+            <inheritdoc />
+            <summary>
+            Get URI path metadata
+            </summary>
+            <param name="uriPath">URI path</param>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriPathScanf.Scan``1(System.String)">
+            <inheritdoc />
+            <summary>
+            Get URI path metadata
+            </summary>
+            <param name="uriPath">URI path</param>
+            <returns></returns>
+        </member>
+        <member name="M:UriPathScanf.UriPathScanf.ScanDict(System.String)">
             <inheritdoc />
             <summary>
             Get URI path metadata

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
 using UriPathScanf.Attributes;
 
 namespace UriPathScanf
@@ -81,7 +82,11 @@ namespace UriPathScanf
         {
             var match = FindMatch(uriPath);
 
-            return !match.HasValue ? null : GetMeta(match.Value);
+            if (!match.HasValue) return null;
+
+            var (descriptor, _, _) = match.Value;
+
+            return descriptor.Meta == null ? GetDictMeta(match.Value) : GetTypedMeta(match.Value);
         }
 
         /// <inheritdoc />
@@ -98,35 +103,50 @@ namespace UriPathScanf
 
             var (descriptor, _, _) = match.Value;
 
-            return descriptor.Meta != typeof(T) ? null : GetMeta(match.Value);
+            return descriptor.Meta != typeof(T) ? null : GetTypedMeta(match.Value);
         }
 
-        private UriMetadata GetMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
+        /// <inheritdoc />
+        /// <summary>
+        /// Get URI path metadata
+        /// </summary>
+        /// <param name="uriPath">URI path</param>
+        /// <returns></returns>
+        public UriMetadata ScanDict(string uriPath)
+        {
+            var match = FindMatch(uriPath);
+
+            if (!match.HasValue) return null;
+
+            var (descriptor, _, _) = match.Value;
+
+            return descriptor.Meta == null ? GetDictMeta(match.Value) : null;
+        }
+
+        private UriMetadata GetDictMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
         {
             var (descriptor, urlMatches, queryString) = match;
 
-            var linkType = descriptor.Type;
-            var metaType = descriptor.Meta;
+            var re = new Dictionary<string, string>();
 
-            var queryStringParsed = QueryHelpers.ParseQuery(queryString);
-
-            // NOTE: if dictionary instead of user defined type
-            if (metaType == null)
+            foreach (var (name, value) in urlMatches)
             {
-                var re = new Dictionary<string, string>();
-
-                foreach (var (name, value) in urlMatches)
-                {
-                    re.Add(name, value);
-                }
-
-                foreach (var s in queryStringParsed)
-                {
-                    re.Add(GetQueryStringBindingName(s.Key), s.Value);
-                }
-
-                return new UriMetadata(linkType, re);
+                re.Add(name, value);
             }
+
+            foreach (var s in QueryHelpers.ParseQuery(queryString))
+            {
+                re.Add(GetQueryStringBindingName(s.Key), s.Value);
+            }
+
+            return new UriMetadata(descriptor.Type, re);
+        }
+
+        private UriMetadata GetTypedMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
+        {
+            var (descriptor, urlMatches, queryString) = match;
+
+            var metaType = descriptor.Meta;
 
             var metaResult = Activator.CreateInstance(metaType);
 
@@ -135,17 +155,17 @@ namespace UriPathScanf
                 AddToMeta(name, value);
             }
 
-            foreach (var s in queryStringParsed)
+            foreach (var s in QueryHelpers.ParseQuery(queryString))
             {
                 AddToMeta(GetQueryStringBindingName(s.Key), s.Value);
             }
 
-            return new UriMetadata(linkType, metaResult) {Type = metaType};
+            return new UriMetadata(descriptor.Type, metaResult) { Type = metaType };
 
             void AddToMeta(string name, string value)
             {
                 if (!_methods[descriptor].TryGetValue(name, out var prop)) return;
-                prop.SetMethod.Invoke(metaResult, new object[] {value});
+                prop.SetMethod.Invoke(metaResult, new object[] { value });
             }
         }
 
