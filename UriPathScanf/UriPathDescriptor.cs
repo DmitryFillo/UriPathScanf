@@ -49,7 +49,7 @@ namespace UriPathScanf
         protected internal Type Meta { get; }
 
         /// <inheritdoc />
-        public bool Equals(UriPathDescriptor other)
+        public virtual bool Equals(UriPathDescriptor other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;

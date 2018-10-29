@@ -137,24 +137,25 @@ namespace UriPathScanf.Tests
             get
             {
                 // Arrange
+                var metaType = typeof(TestTypedMetadata);
                 var descr = new UriPathDescriptor("/shop/selas/{varOne}/{varTwo}/x/{varInherit}//",
-                    "testLinkWithSameMetadata", typeof(TestTypedMetadata));
+                    "testLinkWithSameMetadata", metaType);
 
                 var descriptors = new[]
                 {
-                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", "testLink", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", "testLink", metaType),
 
                     // NOTE: test for duplicates, it should be OK
                     descr,
                     descr,
 
-                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/y/{varInheritTwo}//", "testLinkAttrInheritance", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/y/{varInheritTwo}//", "testLinkAttrInheritance", metaType),
 
                     // NOTE: should be escaped, because key is format URI path
-                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", "testLink2", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("/shop/sales/{varOne}/{varTwo}/x/{varInherit}//", "testLink2", metaType),
 
                     // NOTE: duplicates var name, should be first, also uses "_" for placeholder (no such var in the model)
-                    new UriPathDescriptor("/shop/{_}/{varOne}/{varTwo}/{varTwo}/{varInherit}//", "testLink2", typeof(TestTypedMetadata)),
+                    new UriPathDescriptor("/shop/{_}/{varOne}/{varTwo}/{varTwo}/{varInherit}//", "testLink2", metaType),
                 };
 
                 // Test case data
@@ -168,6 +169,7 @@ namespace UriPathScanf.Tests
                             A = "3"
                         }
                     )
+                    { Type = metaType }
                 ).SetName("Check typed meta for case with query string");
 
                 yield return new TestCaseData(
@@ -179,6 +181,7 @@ namespace UriPathScanf.Tests
                             VarTwo = "second-ident",
                         }
                     )
+                    { Type = metaType }
                 ).SetName("Check typed meta for case without query string");
 
                 yield return new TestCaseData(
@@ -209,6 +212,7 @@ namespace UriPathScanf.Tests
                             B = 132.ToString()
                         }
                     )
+                    { Type = metaType }
                 ).SetName("Check typed meta for case without not query string params and assigning to the object");
 
                 yield return new TestCaseData(
@@ -221,6 +225,7 @@ namespace UriPathScanf.Tests
                             B = 132.ToString()
                         }
                     )
+                    { Type = metaType }
                 ).SetName("Check typed meta for another type with same metadata model and with many trailing slashes");
 
                 yield return new TestCaseData(
@@ -233,6 +238,7 @@ namespace UriPathScanf.Tests
                             B = 132.ToString()
                         }
                     )
+                    { Type = metaType }
                 ).SetName("Check typed meta attribute inheritance");
 
                 yield return new TestCaseData(
@@ -251,6 +257,7 @@ namespace UriPathScanf.Tests
                             A = "3"
                         }
                     )
+                    { Type = metaType }
                 ).SetName("Check typed meta for case when placeholder is used and duplicate var name in the format string");
             }
         }
@@ -264,7 +271,7 @@ namespace UriPathScanf.Tests
             public string VarInheritTwo { get; set; }
         }
 
-        public class TestTypedMetadata : TestTypedMetadataBase, IEquatable<TestTypedMetadata>
+        public class TestTypedMetadata : TestTypedMetadataBase, IEquatable<TestTypedMetadata>, IUriPathMetaModel
         {
             [UriMeta("varOne")]
             public string VarOne { get; set; }

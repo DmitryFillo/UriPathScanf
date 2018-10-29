@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace UriPathScanf
 {
@@ -19,6 +21,24 @@ namespace UriPathScanf
         public object Meta { get; }
 
         /// <summary>
+        /// Type of <see cref="Meta"/>
+        /// </summary>
+        public Type Type { get; set; }
+
+        /// <summary>
+        /// Converts <see cref="Meta"/> to dictionary. If it's typed meta then null will be returned
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, string> AsDictionary => Meta as IDictionary<string, string>;
+
+        /// <summary>
+        /// Cast <see cref="Meta"/> to type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T As<T>() where T: class, IUriPathMetaModel => Meta as T;
+
+        /// <summary>
         /// Creates URI metadata instance
         /// </summary>
         /// <param name="uriType">Type of URI path (user defined)</param>
@@ -30,7 +50,7 @@ namespace UriPathScanf
         }
 
         /// <inheritdoc />
-        public bool Equals(UriMetadata other)
+        public virtual bool Equals(UriMetadata other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -42,8 +62,7 @@ namespace UriPathScanf
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((UriMetadata)obj);
+            return obj.GetType() == GetType() && Equals((UriMetadata) obj);
         }
 
         /// <inheritdoc />
@@ -61,7 +80,10 @@ namespace UriPathScanf
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator ==(UriMetadata left, UriMetadata right) => Equals(left, right);
+        public static bool operator ==(UriMetadata left, UriMetadata right)
+        {
+            return Equals(left, right);
+        }
 
         /// <summary>
         /// Not equals operator
@@ -69,6 +91,9 @@ namespace UriPathScanf
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator !=(UriMetadata left, UriMetadata right) => !Equals(left, right);
+        public static bool operator !=(UriMetadata left, UriMetadata right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

@@ -28,22 +28,32 @@ namespace UriPathScanf.Example
 
             var uriPathScanf = new UriPathScanf(descriptors);
 
-            // NOTE: dict result
-            var meta = uriPathScanf.Scan("/path/some/12314?x=123");
-            var metaResult = (IDictionary<string, string>) meta.Meta;
+            var result = uriPathScanf.Scan("/path/some/12314?x=123");
 
+            switch (result.Meta)
+            {
+                case IDictionary<string, string> m:
+                    ProcessDictionary(result, m);
+                    break;
+                case Meta m:
+                    ProcessDictionary(result, m);
+                    break;
+            }
+        }
+
+        private static void ProcessDictionary(UriMetadata result, IDictionary<string, string> metaResult)
+        {
             Debug.Assert(metaResult["varOne"] == "12314");
             Debug.Assert(metaResult["qs__x"] == "123");
-            Debug.Assert(meta.UriType == "varOneLink");
+            Debug.Assert(result.UriType == "varOneLink");
+        }
 
-            // NOTE: meta model result
-            var metaModel = uriPathScanf.Scan("/path/some/123/321/?x=123&someVar=1&someVar2=2");
-            var metaResultModel = (Meta) metaModel.Meta;
-
-            Debug.Assert(metaResultModel.SomeVar == "123");
-            Debug.Assert(metaResultModel.SomeVarQueryString == "1");
-            Debug.Assert(metaResultModel.SomeVar2 == "321");
-            Debug.Assert(metaModel.UriType == "varTwoLink");
+        private static void ProcessDictionary(UriMetadata result, Meta m)
+        {
+            Debug.Assert(m.SomeVar == "123");
+            Debug.Assert(m.SomeVarQueryString == "1");
+            Debug.Assert(m.SomeVar2 == "321");
+            Debug.Assert(result.UriType == "varTwoLink");
         }
     }
 }

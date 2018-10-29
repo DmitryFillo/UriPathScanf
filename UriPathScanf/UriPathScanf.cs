@@ -81,12 +81,29 @@ namespace UriPathScanf
         {
             var match = FindMatch(uriPath);
 
-            if (!match.HasValue)
-            {
-                return null;
-            }
+            return !match.HasValue ? null : GetMeta(match.Value);
+        }
 
-            var (descriptor, urlMatches, queryString) = match.Value;
+        /// <inheritdoc />
+        /// <summary>
+        /// Get URI path metadata
+        /// </summary>
+        /// <param name="uriPath">URI path</param>
+        /// <returns></returns>
+        public UriMetadata Scan<T>(string uriPath) where T: class, IUriPathMetaModel
+        {
+            var match = FindMatch(uriPath);
+
+            if (!match.HasValue) return null;
+
+            var (descriptor, _, _) = match.Value;
+
+            return descriptor.Meta != typeof(T) ? null : GetMeta(match.Value);
+        }
+
+        private UriMetadata GetMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
+        {
+            var (descriptor, urlMatches, queryString) = match;
 
             var linkType = descriptor.Type;
             var metaType = descriptor.Meta;
@@ -123,12 +140,12 @@ namespace UriPathScanf
                 AddToMeta(GetQueryStringBindingName(s.Key), s.Value);
             }
 
-            return new UriMetadata(linkType, metaResult);
+            return new UriMetadata(linkType, metaResult) {Type = metaType};
 
             void AddToMeta(string name, string value)
             {
                 if (!_methods[descriptor].TryGetValue(name, out var prop)) return;
-                prop.SetMethod.Invoke(metaResult, new object[] { value });
+                prop.SetMethod.Invoke(metaResult, new object[] {value});
             }
         }
 
