@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Primitives;
 using UriPathScanf.Attributes;
 
 namespace UriPathScanf
@@ -123,6 +122,48 @@ namespace UriPathScanf
             return descriptor.Meta == null ? (UriMetadata<IDictionary<string, string>>) GetDictMeta(match.Value) : null;
         }
 
+        /// <summary>
+        /// Finds match in descriptors
+        /// </summary>
+        /// <param name="uriPath">URI path</param>
+        /// <returns></returns>
+        protected (UriPathDescriptor, IEnumerable<(string, string)>, string)? FindMatch(string uriPath)
+        {
+            foreach (var descr in _descriptors)
+            {
+                var format = descr.Format;
+
+                var regexString = _placeholderRegex
+                    .Replace(format, m => "(?<" + m.Groups[1].Value + ">.+)")
+                    .TrimEnd('/');
+
+                // NOTE: right to left search regexp, so it starts with ^
+                regexString = _slashRegex.Replace(regexString, m => "/+");
+                regexString = $@"^{regexString}/*(\?+.+)*";
+                var formatRegex = new Regex(regexString, RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
+
+                var matches = formatRegex.Match(uriPath);
+
+                if (!matches.Success)
+                    continue;
+
+                // NOTE: 1 is query string group (because of "right to left" regex)   
+                var urlMatches = formatRegex.GetGroupNames().Where(g => g != "1" && g != "0").Select(m => (m, matches.Groups[m].Value));
+                var queryString = matches.Groups[1].Value;
+
+                return (descr, urlMatches, queryString);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets bind name for query string
+        /// </summary>
+        /// <param name="qsParamName">Query string param name</param>
+        /// <returns></returns>
+        protected string GetQueryStringBindingName(string qsParamName) => "qs__" + qsParamName;
+
         private UriMetadata GetDictMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
         {
             var (descriptor, urlMatches, queryString) = match;
@@ -168,47 +209,5 @@ namespace UriPathScanf
                 prop.SetMethod.Invoke(metaResult, new object[] { value });
             }
         }
-
-        /// <summary>
-        /// Finds match in descriptors
-        /// </summary>
-        /// <param name="uriPath">URI path</param>
-        /// <returns></returns>
-        protected (UriPathDescriptor, IEnumerable<(string, string)>, string)? FindMatch(string uriPath)
-        {
-            foreach (var descr in _descriptors)
-            {
-                var format = descr.Format;
-
-                var regexString = _placeholderRegex
-                    .Replace(format, m => "(?<" + m.Groups[1].Value + ">.+)")
-                    .TrimEnd('/');
-
-                // NOTE: right to left search regexp, so it starts with ^
-                regexString = _slashRegex.Replace(regexString, m => "/+");
-                regexString = $@"^{regexString}/*(\?+.+)*";
-                var formatRegex = new Regex(regexString, RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
-
-                var matches = formatRegex.Match(uriPath);
-
-                if (!matches.Success)
-                    continue;
-
-                // NOTE: 1 is query string group (because of "right to left" regex)   
-                var urlMatches = formatRegex.GetGroupNames().Where(g => g != "1" && g != "0").Select(m => (m, matches.Groups[m].Value));
-                var queryString = matches.Groups[1].Value;
-
-                return (descr, urlMatches, queryString);
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Gets bind name for query string
-        /// </summary>
-        /// <param name="qsParamName">Query string param name</param>
-        /// <returns></returns>
-        protected string GetQueryStringBindingName(string qsParamName) => "qs__" + qsParamName;
     }
 }

@@ -14,4 +14,4 @@ You can describe URI path like ``/some/path/{id}/some.html`` and parse it to the
 How to use
 ==========
 
-TODO: more examples for scandict and scan<t>
+TODO: more examples for scandict and scan<t> + add try parse with out var

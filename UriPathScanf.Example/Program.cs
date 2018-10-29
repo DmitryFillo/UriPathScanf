@@ -4,7 +4,7 @@ using UriPathScanf.Attributes;
 
 namespace UriPathScanf.Example
 {
-    internal class Meta
+    internal class Meta : IUriPathMetaModel
     {
         [UriMeta("someVar")]
         public string SomeVar { get; set; }
@@ -30,6 +30,7 @@ namespace UriPathScanf.Example
 
             var result = uriPathScanf.Scan("/path/some/12314?x=123");
 
+            // pattern matching
             switch (result.Meta)
             {
                 case IDictionary<string, string> m:
