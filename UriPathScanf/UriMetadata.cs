@@ -101,17 +101,38 @@ namespace UriPathScanf
         public Type Type { get; set; }
 
         /// <summary>
-        /// Converts <see cref="UriMetadata{T}.Meta"/> to dictionary. If it's typed meta then null will be returned
+        /// Converts <see cref="UriMetadata{T}.Meta"/> to <see cref="IDictionary{TKey,TValue}"/>.
+        /// If it's typed meta then null will be returned
         /// </summary>
         /// <returns></returns>
-        public IDictionary<string, string> AsDict => Meta as IDictionary<string, string>;
+        public bool TryCast(out IDictionary<string, string> result)
+        {
+            if (!(Meta is IDictionary<string, string> casted))
+            {
+                result = null;
+                return false;
+            }
+
+            result = casted;
+            return true;
+        } 
 
         /// <summary>
         /// Cast <see cref="UriMetadata{T}.Meta"/> to type
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T As<T>() where T: class, IUriPathMetaModel => Meta as T;
+        public bool TryCast<T>(out T result) where T : class, IUriPathMetaModel
+        {
+            if (!(Meta is T casted))
+            {
+                result = null;
+                return false;
+            }
+
+            result = casted;
+            return true;
+        }
 
         /// <inheritdoc />
         public UriMetadata(string uriType, object meta) : base(uriType, meta)

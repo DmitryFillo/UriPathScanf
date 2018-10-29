@@ -50,7 +50,7 @@
         </member>
         <member name="T:UriPathScanf.IUriPathMetaModel">
             <summary>
-            Marks model that it can be used to cast from <see cref="!:UriMetadata.Meta"/>
+            Marks model that it can be used to cast from <see cref="P:UriPathScanf.UriMetadata`1.Meta"/>
             </summary>
         </member>
         <member name="T:UriPathScanf.IUriPathScanf">
@@ -146,13 +146,14 @@
             Type of <see cref="P:UriPathScanf.UriMetadata`1.Meta"/>
             </summary>
         </member>
-        <member name="P:UriPathScanf.UriMetadata.AsDict">
+        <member name="M:UriPathScanf.UriMetadata.TryCast(System.Collections.Generic.IDictionary{System.String,System.String}@)">
             <summary>
-            Converts <see cref="P:UriPathScanf.UriMetadata`1.Meta"/> to dictionary. If it's typed meta then null will be returned
+            Converts <see cref="P:UriPathScanf.UriMetadata`1.Meta"/> to <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            If it's typed meta then null will be returned
             </summary>
             <returns></returns>
         </member>
-        <member name="M:UriPathScanf.UriMetadata.As``1">
+        <member name="M:UriPathScanf.UriMetadata.TryCast``1(``0@)">
             <summary>
             Cast <see cref="P:UriPathScanf.UriMetadata`1.Meta"/> to type
             </summary>

@@ -16,10 +16,11 @@ namespace UriPathScanf.Tests
             var metadata = new UriMetadata("someType", new Dictionary<string, string>());
 
             // Act
-            var result = metadata.AsDict;
+            var resultCast = metadata.TryCast(out var result);
 
             // Assert
             result.Should().NotBeNull();
+            resultCast.Should().BeTrue();
         }
 
         [Test]
@@ -29,10 +30,11 @@ namespace UriPathScanf.Tests
             var metadata = new UriMetadata("someType", new object());
 
             // Act
-            var result = metadata.AsDict;
+            var resultCast = metadata.TryCast(out var result);
 
             // Assert
             result.Should().BeNull();
+            resultCast.Should().BeFalse();
         }
 
         [Test]
@@ -42,10 +44,11 @@ namespace UriPathScanf.Tests
             var metadata = new UriMetadata("someType", new Meta());
 
             // Act
-            var result = metadata.As<Meta>();
+            var resultCast = metadata.TryCast<Meta>(out var result);
 
             // Assert
             result.Should().NotBeNull();
+            resultCast.Should().BeTrue();
         }
 
         [Test]
@@ -55,10 +58,11 @@ namespace UriPathScanf.Tests
             var metadata = new UriMetadata("someType", new object());
 
             // Act
-            var result = metadata.As<Meta>();
+            var resultCast = metadata.TryCast<Meta>(out var result);
 
             // Assert
             result.Should().BeNull();
+            resultCast.Should().BeFalse();
         }
 
         [Test]

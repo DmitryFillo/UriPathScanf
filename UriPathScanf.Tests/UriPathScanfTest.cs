@@ -25,7 +25,10 @@ namespace UriPathScanf.Tests
             {
                 result.UriType.Should().BeEquivalentTo(expectedResult.UriType);
                 result.Type.Should().Be(expectedResult.Type);
-                result.AsDict.Should().BeEquivalentTo(expectedResult.AsDict);
+
+                result.TryCast(out var resultCasted);
+                resultCasted.Should().BeEquivalentTo(expectedResult.Meta);
+
                 resultTyped.Meta.Should().BeEquivalentTo(expectedResult.Meta);
             }
             else
@@ -51,8 +54,10 @@ namespace UriPathScanf.Tests
             {
                 result.UriType.Should().BeEquivalentTo(expectedResult.UriType);
                 result.Type.Should().Be(expectedResult.Type);
-                result.As<UriPathScanfTestSource.TestTypedMetadata>().Should()
-                    .BeEquivalentTo(expectedResult.As<UriPathScanfTestSource.TestTypedMetadata>());
+
+                result.TryCast<UriPathScanfTestSource.TestTypedMetadata>(out var resultCasted);
+                resultCasted.Should().BeEquivalentTo(expectedResult.Meta);
+
                 resultTyped.Meta.Should().BeEquivalentTo(expectedResult.Meta);
             }
             else

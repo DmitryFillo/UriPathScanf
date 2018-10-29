@@ -11,7 +11,19 @@ You can describe URI path like ``/some/path/{id}/some.html`` and parse it to the
 
 .. contents::
 
+Motivation
+==========
+
+TBD
+
 How to use
 ==========
 
-TODO: more examples for scandict and scan<t> + add try parse with out var
+Install `UriPathScanf <https://www.nuget.org/packages/UriPathScanf>`_ via nuget.
+
+TBD
+
+Examples
+========
+
+Check examples in the project ``UriPathScanf.Example``.
