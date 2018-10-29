@@ -6,7 +6,7 @@ namespace UriPathScanf.Example
     internal static class Example2
     {
         /// <summary>
-        /// Example using <see cref="UriPathScanf.Scan"/>, <see cref="UriPathScanf.Scan{T}"/> and <see cref="UriPathScanf.ScanDict"/>
+        /// Example using <see cref="UriPathScanf.ScanAll"/>, <see cref="UriPathScanf.ScanAll{T}"/> and <see cref="UriPathScanf.Scan"/>
         /// </summary>
         public static void Go()
         {
@@ -38,11 +38,11 @@ namespace UriPathScanf.Example
             Debug.Assert(resultNonMeta == null);
 
             // dict scan and found
-            var resultMetaDict = uriPathScanf.ScanDict("/path/some/3");
+            var resultMetaDict = uriPathScanf.Scan("/path/some/3");
             Debug.Assert(resultMetaDict.Meta["varOne"] == "3");
 
             // dict scan and not found
-            var resultNotDict = uriPathScanf.ScanDict("/path/some/3/4");
+            var resultNotDict = uriPathScanf.Scan("/path/some/3/4");
             Debug.Assert(resultNotDict == null);
         }
 

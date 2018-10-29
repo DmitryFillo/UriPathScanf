@@ -16,7 +16,7 @@ namespace UriPathScanf.Tests
             var metadata = new UriMetadata("someType", new Dictionary<string, string>());
 
             // Act
-            var resultCast = metadata.TryCast(out var result);
+            var resultCast = metadata.TryCastToDict(out var result);
 
             // Assert
             result.Should().NotBeNull();
@@ -30,7 +30,7 @@ namespace UriPathScanf.Tests
             var metadata = new UriMetadata("someType", new object());
 
             // Act
-            var resultCast = metadata.TryCast(out var result);
+            var resultCast = metadata.TryCastToDict(out var result);
 
             // Assert
             result.Should().BeNull();

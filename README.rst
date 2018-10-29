@@ -5,10 +5,7 @@ URI path scanf
 .. image:: https://travis-ci.com/DmitryFillo/UriPathScanf.svg?branch=master
      :target: https://travis-ci.com/DmitryFillo/UriPathScanf
 
-TBD: scan -> scanAll; scanDict -> scan; tryCast -> tryCastToDict
-TBD: nuget pkg rc
-TBD: logo
-TBD: nuget pkg release
+TBD: nuget pkg rc, logo, nuget pkg release
 
 Reversed String.Format for URI path.
 
@@ -43,13 +40,13 @@ Usage
   var uriPathScanf = new UriPathScanf(descriptors);
 
   // scan some URI path
-  var result = uriPathScanf.ScanDict("/path/some/xxx?a=1");
+  var result = uriPathScanf.Scan("/path/some/xxx?a=1");
   
   // result.UriType == "firstType"
   // result.Meta is Dictionary<string, string> with "varOne" == "xxx" and "qs__a" = "1" 
   
   // scan some URI path
-  result = uriPathScanf.ScanDict("/path/some/xxx/123y////?a=1");
+  result = uriPathScanf.Scan("/path/some/xxx/123y////?a=1");
   
   // result.UriType == "secondType"
   // result.Meta is Dictionary<string, string> with "someVar" == "xxx", "someVar2" == "123y" and "qs__a" = "1" 
@@ -138,7 +135,7 @@ Diffrenently typed descriptors:
   // result.UriType == "secondType"
   // result.Meta.X == null
   
-  result = uriPathScanf.Scan("/some/path/x=x");
+  result = uriPathScanf.ScanAll("/some/path/x=x");
   
   // result.UriType == "secondType"
   // result.Meta is object
@@ -177,7 +174,7 @@ Typed and non-typed descriptors:
 
   var uriPathScanf = new UriPathScanf(descriptors);
 
-  var result = uriPathScanf.Scan("/path/some/1/2");
+  var result = uriPathScanf.ScanAll("/path/some/1/2");
   
   // result.UriType == "someType"
   // result.Meta is object
@@ -193,16 +190,16 @@ Typed and non-typed descriptors:
   // resultCastedToMeta.SomeVar = "1"
   // resultCastedToMeta.SomeVar2 = "2"
   
-  result.TryCast(out var resultCastedToDict) 
+  result.TryCastToDict(out var resultCastedToDict) 
   
   // resultCastedToDict == null
   
-  result = uriPathScanf.Scan("/some/path/?x=3&m=n");
+  result = uriPathScanf.ScanAll("/some/path/?x=3&m=n");
   
   // result.UriType == "someType"
   // result.Meta is object
   
-  result.TryCast(out resultCastedToDict) 
+  result.TryCastToDict(out resultCastedToDict) 
   
   // resultCastedToDict is Dictionary<string, string> with keys "qs__x" and "qs__m"
   

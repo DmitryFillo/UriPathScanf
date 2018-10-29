@@ -8,14 +8,14 @@ namespace UriPathScanf
     public interface IUriPathScanf
     {
         /// <summary>
-        /// Gets meta by URI path
+        /// Gets meta by URI path (all descriptors)
         /// </summary>
         /// <param name="uriPath">URI path (w/o domain and proto)</param>
         /// <returns></returns>
-        UriMetadata Scan(string uriPath);
+        UriMetadata ScanAll(string uriPath);
 
         /// <summary>
-        /// Gets meta by URI path
+        /// Gets meta by URI path (only typed descriptors)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="uriPath"></param>
@@ -23,10 +23,10 @@ namespace UriPathScanf
         UriMetadata<T> Scan<T>(string uriPath) where T : class, IUriPathMetaModel;
 
         /// <summary>
-        /// Gets meta by URI path
+        /// Gets meta by URI path (only non-typed descriptors)
         /// </summary>
         /// <param name="uriPath"></param>
         /// <returns></returns>
-        UriMetadata<IDictionary<string, string>> ScanDict(string uriPath);
+        UriMetadata<IDictionary<string, string>> Scan(string uriPath);
     }
 }

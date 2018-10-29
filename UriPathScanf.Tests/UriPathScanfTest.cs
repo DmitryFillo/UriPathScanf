@@ -17,8 +17,8 @@ namespace UriPathScanf.Tests
             var urlParser = new UriPathScanf(linkDescriptors);
 
             // Act
-            var result = urlParser.Scan(url);
-            var resultTyped = urlParser.ScanDict(url);
+            var result = urlParser.ScanAll(url);
+            var resultTyped = urlParser.Scan(url);
 
             // Assert
             if (expectedResult != null)
@@ -26,7 +26,7 @@ namespace UriPathScanf.Tests
                 result.UriType.Should().BeEquivalentTo(expectedResult.UriType);
                 result.Type.Should().Be(expectedResult.Type);
 
-                result.TryCast(out var resultCasted);
+                result.TryCastToDict(out var resultCasted);
                 resultCasted.Should().BeEquivalentTo(expectedResult.Meta);
 
                 resultTyped.Meta.Should().BeEquivalentTo(expectedResult.Meta);
@@ -46,7 +46,7 @@ namespace UriPathScanf.Tests
             var urlParser = new UriPathScanf(linkDescriptors);
 
             // Act
-            var result = urlParser.Scan(url);
+            var result = urlParser.ScanAll(url);
             var resultTyped = urlParser.Scan<UriPathScanfTestSource.TestTypedMetadata>(url);
 
             // Assert
@@ -80,7 +80,7 @@ namespace UriPathScanf.Tests
 
             // Act
             var resultTyped = urlParser.Scan<UriPathScanfTestSource.TestTypedMetadataFake>(uri);
-            var resultDictTyped = urlParser.ScanDict(uri);
+            var resultDictTyped = urlParser.Scan(uri);
 
             // Assert
             resultTyped.Should().BeNull();

@@ -105,7 +105,7 @@ namespace UriPathScanf
         /// If it's typed meta then null will be returned
         /// </summary>
         /// <returns></returns>
-        public bool TryCast(out IDictionary<string, string> result)
+        public bool TryCastToDict(out IDictionary<string, string> result)
         {
             if (!(Meta is IDictionary<string, string> casted))
             {

@@ -73,11 +73,11 @@ namespace UriPathScanf
 
         /// <inheritdoc />
         /// <summary>
-        /// Get URI path metadata
+        /// Get URI path metadata (all descriptors)
         /// </summary>
         /// <param name="uriPath">URI path</param>
         /// <returns></returns>
-        public UriMetadata Scan(string uriPath)
+        public UriMetadata ScanAll(string uriPath)
         {
             var match = FindMatch(uriPath);
 
@@ -90,7 +90,7 @@ namespace UriPathScanf
 
         /// <inheritdoc />
         /// <summary>
-        /// Get URI path metadata
+        /// Get URI path metadata (only typed descriptors)
         /// </summary>
         /// <param name="uriPath">URI path</param>
         /// <returns></returns>
@@ -107,11 +107,11 @@ namespace UriPathScanf
 
         /// <inheritdoc />
         /// <summary>
-        /// Get URI path metadata
+        /// Get URI path metadata (only non-typed descriptors)
         /// </summary>
         /// <param name="uriPath">URI path</param>
         /// <returns></returns>
-        public UriMetadata<IDictionary<string, string>> ScanDict(string uriPath)
+        public UriMetadata<IDictionary<string, string>> Scan(string uriPath)
         {
             var match = FindMatch(uriPath);
 

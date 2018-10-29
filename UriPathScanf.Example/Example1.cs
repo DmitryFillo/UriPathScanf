@@ -26,7 +26,7 @@ namespace UriPathScanf.Example
                 "/path/some/12314/xxx/?x=123"
             })
             {
-                var result = uriPathScanf.Scan(u);
+                var result = uriPathScanf.ScanAll(u);
 
                 // pattern matching
                 switch (result.Meta)
@@ -41,7 +41,7 @@ namespace UriPathScanf.Example
 
                 // casting
                 if (result.TryCast<Meta>(out var resultMeta)) Assert(result, resultMeta);
-                if (result.TryCast(out var resultDict)) Assert(result, resultDict);
+                if (result.TryCastToDict(out var resultDict)) Assert(result, resultDict);
             }
         }
 

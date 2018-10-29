@@ -58,7 +58,7 @@
             URI parser, provides API to get metadata from URI paths
             </summary>
         </member>
-        <member name="M:UriPathScanf.IUriPathScanf.Scan(System.String)">
+        <member name="M:UriPathScanf.IUriPathScanf.ScanAll(System.String)">
             <summary>
             Gets meta by URI path
             </summary>
@@ -73,7 +73,7 @@
             <param name="uriPath"></param>
             <returns></returns>
         </member>
-        <member name="M:UriPathScanf.IUriPathScanf.ScanDict(System.String)">
+        <member name="M:UriPathScanf.IUriPathScanf.Scan(System.String)">
             <summary>
             Gets meta by URI path
             </summary>
@@ -146,7 +146,7 @@
             Type of <see cref="P:UriPathScanf.UriMetadata`1.Meta"/>
             </summary>
         </member>
-        <member name="M:UriPathScanf.UriMetadata.TryCast(System.Collections.Generic.IDictionary{System.String,System.String}@)">
+        <member name="M:UriPathScanf.UriMetadata.TryCastToDict(System.Collections.Generic.IDictionary{System.String,System.String}@)">
             <summary>
             Converts <see cref="P:UriPathScanf.UriMetadata`1.Meta"/> to <see cref="T:System.Collections.Generic.IDictionary`2"/>.
             If it's typed meta then null will be returned
@@ -236,7 +236,7 @@
             </summary>
             <param name="descriptors">URI paths descriptors</param>
         </member>
-        <member name="M:UriPathScanf.UriPathScanf.Scan(System.String)">
+        <member name="M:UriPathScanf.UriPathScanf.ScanAll(System.String)">
             <inheritdoc />
             <summary>
             Get URI path metadata
@@ -252,7 +252,7 @@
             <param name="uriPath">URI path</param>
             <returns></returns>
         </member>
-        <member name="M:UriPathScanf.UriPathScanf.ScanDict(System.String)">
+        <member name="M:UriPathScanf.UriPathScanf.Scan(System.String)">
             <inheritdoc />
             <summary>
             Get URI path metadata
