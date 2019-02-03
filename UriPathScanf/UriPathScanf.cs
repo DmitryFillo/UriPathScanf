@@ -1,213 +1,143 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.WebUtilities;
-using UriPathScanf.Attributes;
+using UriPathScanf.Internal;
 
 namespace UriPathScanf
 {
-    /// <inheritdoc />
     /// <summary>
-    /// URI path parser
+    /// URI path scanf utility
     /// </summary>
     public class UriPathScanf : IUriPathScanf
     {
-        private readonly Regex _placeholderRegex = new Regex(@"\{(\w+)\}");
-        private readonly Regex _slashRegex = new Regex(@"/+");
-
-        private readonly UriPathDescriptor[] _descriptors;
-        private readonly Dictionary<UriPathDescriptor, Dictionary<string, PropertyInfo>> _methods
-            = new Dictionary<UriPathDescriptor, Dictionary<string, PropertyInfo>>();
+        private readonly UriPathConfiguration _uriPathConfiguration = new UriPathConfiguration();
 
         /// <summary>
-        /// Creates instances of <see cref="T:UriPathScanf"/>
+        /// Create URI path scanf instance.
         /// </summary>
-        /// <param name="descriptors">URI paths descriptors</param>
-        public UriPathScanf(IEnumerable<UriPathDescriptor> descriptors)
+        /// <param name="configurationFactory">Configuration factory</param>
+        /// <exception cref="ArgumentException">If no configuration factory provided</exception>
+        public UriPathScanf(Action<UriPathConfiguration> configurationFactory)
         {
-            // NOTE: to search longest uriPath format first
-            _descriptors = descriptors.OrderByDescending(d => d.Format.ToCharArray().Aggregate(0, (acc, next) => next == '/' ? acc + 1 : acc)).ToArray();
-
-            // NOTE: only for case when we need result model
-            foreach (var d in _descriptors.Where(d => d.Meta != null))
+            if (configurationFactory == null)
             {
-                var result = new Dictionary<string, PropertyInfo>();
-
-                var assignableProps = d.Meta
-                    .GetTypeInfo()
-                    .DeclaredProperties
-                    .Where(x => x.PropertyType.GetTypeInfo().IsAssignableFrom(typeof(string).GetTypeInfo()));
-
-                foreach (var m in assignableProps)
-                {
-                    var attrs = m.GetCustomAttributes();
-
-                    var attr = attrs.OfType<UriMetaAttribute>().FirstOrDefault();
-
-                    if (attr == null) continue;
-
-                    var name = attr.IsQueryString ? GetQueryStringBindingName(attr.BindName) : attr.BindName;
-
-                    try
-                    {
-                        result.Add(name, m);
-                    }
-                    catch (ArgumentException)
-                    {
-                        // NOTE: do not fail on duplicates
-                    }
-                }
-
-                try
-                {
-                    _methods.Add(d, result);
-                }
-                catch (ArgumentException)
-                {
-                    // NOTE: do not fail on duplicates
-                }
+                throw new ArgumentException("You should provide configuration factory delegate");
             }
+
+            configurationFactory(_uriPathConfiguration);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// Get URI path metadata (all descriptors)
-        /// </summary>
-        /// <param name="uriPath">URI path</param>
-        /// <returns></returns>
-        public UriMetadata ScanAll(string uriPath)
+        public object Scan(string uriPath)
         {
-            var match = FindMatch(uriPath);
+            var matchResult = Match(uriPath);
 
-            if (!match.HasValue) return null;
+            if (matchResult == null) return null;
 
-            var (descriptor, _, _) = match.Value;
+            var (type, attrs) = matchResult.Value;
 
-            return descriptor.Meta == null ? GetDictMeta(match.Value) : GetTypedMeta(match.Value);
+            return Factories[type](attrs);
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// Get URI path metadata (only typed descriptors)
-        /// </summary>
-        /// <param name="uriPath">URI path</param>
-        /// <returns></returns>
-        public UriMetadata<T> Scan<T>(string uriPath) where T: class, IUriPathMetaModel
+        public T Scan<T>(string uriPath) where T: class
         {
-            var match = FindMatch(uriPath);
+            var matchResult = Match(uriPath);
 
-            if (!match.HasValue) return null;
+            if (matchResult == null) return null;
 
-            var (descriptor, _, _) = match.Value;
+            var (type, attrs) = matchResult.Value;
 
-            return descriptor.Meta != typeof(T) ? null : (UriMetadata<T>) GetTypedMeta(match.Value);
+            return typeof(T) == type ? (T)Factories[type](attrs) : null;
         }
 
-        /// <inheritdoc />
+        // TODO: add query string
         /// <summary>
-        /// Get URI path metadata (only non-typed descriptors)
+        /// Scan given URI path across registered descriptors
         /// </summary>
-        /// <param name="uriPath">URI path</param>
+        /// <param name="uriPath"></param>
         /// <returns></returns>
-        public UriMetadata<IDictionary<string, string>> Scan(string uriPath)
+        protected virtual (Type, IDictionary<string, string>)? Match(string uriPath)
         {
-            var match = FindMatch(uriPath);
+            // TODO: support relative paths
+            var uri = new Uri(uriPath, UriKind.RelativeOrAbsolute);
 
-            if (!match.HasValue) return null;
+            var segments = uri
+                .Segments
+                .Skip(1)
+                .Select(s => s.TrimEnd(_uriPathConfiguration.Delimiter))
+                .Where(s => !string.IsNullOrEmpty(s))
+                .ToArray();
 
-            var (descriptor, _, _) = match.Value;
-
-            return descriptor.Meta == null ? (UriMetadata<IDictionary<string, string>>) GetDictMeta(match.Value) : null;
-        }
-
-        /// <summary>
-        /// Finds match in descriptors
-        /// </summary>
-        /// <param name="uriPath">URI path</param>
-        /// <returns></returns>
-        protected (UriPathDescriptor, IEnumerable<(string, string)>, string)? FindMatch(string uriPath)
-        {
-            foreach (var descr in _descriptors)
+           
+            foreach (var (attr, type) in Attributes)
             {
-                var format = descr.Format;
+                var scheme = GetUriPathFormat(attr).ToArray();
 
-                var regexString = _placeholderRegex
-                    .Replace(format, m => "(?<" + m.Groups[1].Value + ">.+)")
-                    .TrimEnd('/');
+                if (segments.Length != scheme.Length)
+                {
+                    return null;
+                }
 
-                // NOTE: right to left search regexp, so it starts with ^
-                regexString = _slashRegex.Replace(regexString, m => "/+");
-                regexString = $@"^{regexString}/*(\?+.+)*";
-                var formatRegex = new Regex(regexString, RegexOptions.RightToLeft | RegexOptions.IgnoreCase);
+                var placeholderValues = scheme
+                    .Zip(segments, (s, s1) =>
+                    {
+                        if (s == s1)
+                        {
+                            return null;
+                        }
 
-                var matches = formatRegex.Match(uriPath);
+                        if (s.IsPlaceholderVariable())
+                        {
+                            return ((string PropName, string ExtractedValue)?)(s, s1);
+                        }
 
-                if (!matches.Success)
-                    continue;
+                        return null;
+                    })
+                    .Where(x => x != null)
+                    .ToDictionary(x => x.Value.PropName.GetNameOfPlaceholderVariable(), x => x.Value.ExtractedValue);
 
-                // NOTE: 1 is query string group (because of "right to left" regex)   
-                var urlMatches = formatRegex.GetGroupNames().Where(g => g != "1" && g != "0").Select(m => (m, matches.Groups[m].Value));
-                var queryString = matches.Groups[1].Value;
-
-                return (descr, urlMatches, queryString);
+                if (placeholderValues.Any())
+                {
+                    return (type, placeholderValues);
+                }
             }
 
             return null;
         }
 
         /// <summary>
-        /// Gets bind name for query string
+        /// Gets URI path format from given attribute using format and names
         /// </summary>
-        /// <param name="qsParamName">Query string param name</param>
+        /// <param name="attr"></param>
         /// <returns></returns>
-        protected string GetQueryStringBindingName(string qsParamName) => "qs__" + qsParamName;
-
-        private UriMetadata GetDictMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
+        protected virtual IEnumerable<string> GetUriPathFormat(UriPathAttribute attr)
         {
-            var (descriptor, urlMatches, queryString) = match;
-
-            var re = new Dictionary<string, string>();
-
-            foreach (var (name, value) in urlMatches)
+            using (var enumerator = attr.Names.GetEnumerator())
             {
-                re.Add(name, value);
-            }
+                foreach (var v in attr.Format.Split(_uriPathConfiguration.Delimiter).Skip(1).Select((p, i) =>
+                {
+                    if (!p.IsPlaceholder()) return p;
 
-            foreach (var s in QueryHelpers.ParseQuery(queryString))
-            {
-                re.Add(GetQueryStringBindingName(s.Key), s.Value);
-            }
+                    enumerator.MoveNext();
 
-            return new UriMetadata(descriptor.Type, re) { Type = typeof(Dictionary<string, string>) };
+                    return enumerator.Current.ToPlaceholderVariable();
+
+                }))
+                {
+                    yield return v;
+                }
+            }
         }
 
-        private UriMetadata GetTypedMeta((UriPathDescriptor, IEnumerable<(string, string)>, string) match)
-        {
-            var (descriptor, urlMatches, queryString) = match;
+        /// <summary>
+        /// Gets attributes from <see cref="UriPathConfiguration"/>
+        /// </summary>
+        /// <returns></returns>
+        protected IEnumerable<(UriPathAttribute, Type)> Attributes => _uriPathConfiguration.Attributes;
 
-            var metaType = descriptor.Meta;
-
-            var metaResult = Activator.CreateInstance(metaType);
-
-            foreach (var (name, value) in urlMatches)
-            {
-                AddToMeta(name, value);
-            }
-
-            foreach (var s in QueryHelpers.ParseQuery(queryString))
-            {
-                AddToMeta(GetQueryStringBindingName(s.Key), s.Value);
-            }
-
-            return new UriMetadata(descriptor.Type, metaResult) { Type = metaType };
-
-            void AddToMeta(string name, string value)
-            {
-                if (!_methods[descriptor].TryGetValue(name, out var prop)) return;
-                prop.SetMethod.Invoke(metaResult, new object[] { value });
-            }
-        }
+        /// <summary>
+        /// Gets factories from <see cref="UriPathConfiguration"/>
+        /// </summary>
+        /// <returns></returns>
+        protected IReadOnlyDictionary<Type, Func<IDictionary<string, string>, object>> Factories => _uriPathConfiguration.Factories;
     }
 }

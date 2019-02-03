@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Dmitry Fillo</Authors>
     <Company>Dmitry Fillo</Company>
@@ -14,6 +14,7 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/DmitryFillo/UriPathScanf/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/DmitryFillo/UriPathScanf</PackageProjectUrl>
     <RepositoryType>Git</RepositoryType>
+    <PackageId>UriScanf</PackageId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -26,7 +27,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.1.2" />
+    <PackageReference Include="System.Linq.Parallel" Version="4.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.TypeConverter">
+      <HintPath>..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.netcore.app\2.0.0\ref\netcoreapp2.0\System.ComponentModel.TypeConverter.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
