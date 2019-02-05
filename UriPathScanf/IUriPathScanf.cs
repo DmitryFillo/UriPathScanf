@@ -6,6 +6,8 @@ namespace UriPathScanf
 {
     public interface IUriPathScanf
     {
-
+        object Scan(string uriPath);
+        T Scan<T>(string uriPath) where T : class;
+        IDictionary<string, string> ScanDyn(string uriPath);
     }
 }

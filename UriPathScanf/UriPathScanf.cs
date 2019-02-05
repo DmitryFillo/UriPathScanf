@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UriPathScanf.Internal;
 
 namespace UriPathScanf
 {
@@ -10,74 +9,96 @@ namespace UriPathScanf
     /// </summary>
     public class UriPathScanf : IUriPathScanf
     {
-        private readonly UriPathConfiguration _uriPathConfiguration = new UriPathConfiguration();
+
+        /// <summary>
+        /// Gets URI path configuration
+        /// </summary>
+        private readonly UriPathConfiguration _uriPathConfiguration;
 
         /// <summary>
         /// Create URI path scanf instance.
         /// </summary>
         /// <param name="configurationFactory">Configuration factory</param>
         /// <exception cref="ArgumentException">If no configuration factory provided</exception>
-        public UriPathScanf(Action<UriPathConfiguration> configurationFactory)
+        public UriPathScanf(UriPathConfiguration uriPathConfiguration)
         {
-            if (configurationFactory == null)
-            {
-                throw new ArgumentException("You should provide configuration factory delegate");
-            }
-
-            configurationFactory(_uriPathConfiguration);
+            _uriPathConfiguration = uriPathConfiguration;
         }
 
         public object Scan(string uriPath)
         {
-            var matchResult = Match(uriPath);
+            var checker = GetMatchChecker(uriPath);
 
-            if (matchResult == null) return null;
+            foreach (var (attr, _, fac) in _uriPathConfiguration.Attributes)
+            {
+                var scheme = attr.GetUriPathFormat();
 
-            var (type, attrs) = matchResult.Value;
+                var result = checker(scheme);
 
-            return Factories[type](attrs);
+                return fac(result);
+            }
+
+            return null;
         }
 
         public T Scan<T>(string uriPath) where T: class
         {
-            var matchResult = Match(uriPath);
+            var checker = GetMatchChecker(uriPath);
 
-            if (matchResult == null) return null;
+            foreach (var (attr, type, fac) in _uriPathConfiguration.Attributes)
+            {
+                var scheme = attr.GetUriPathFormat();
 
-            var (type, attrs) = matchResult.Value;
+                var result = checker(scheme);
 
-            return typeof(T) == type ? (T)Factories[type](attrs) : null;
+                return typeof(T) == type ? (T)fac(result) : null;
+            }
+
+            return null;
         }
 
-        // TODO: add query string
+        public IDictionary<string, string> ScanDyn(string uriPath)
+        {
+            var checker = GetMatchChecker(uriPath);
+
+            return _uriPathConfiguration.DynamicDeclaredFormats.Select(format => format.Split('/').Skip(1))
+                .Select(scheme => checker(scheme))
+                .FirstOrDefault();
+        }
+
+        // TODO: query string
         /// <summary>
-        /// Scan given URI path across registered descriptors
+        /// 
         /// </summary>
         /// <param name="uriPath"></param>
         /// <returns></returns>
-        protected virtual (Type, IDictionary<string, string>)? Match(string uriPath)
+        private static Func<IEnumerable<string>, IDictionary<string, string>> GetMatchChecker(string uriPath)
         {
             // TODO: support relative paths
             var uri = new Uri(uriPath, UriKind.RelativeOrAbsolute);
 
+            if (!uri.IsAbsoluteUri)
+            {
+                uri = new Uri("http://_/" + uriPath);
+            }
+
             var segments = uri
                 .Segments
                 .Skip(1)
-                .Select(s => s.TrimEnd(_uriPathConfiguration.Delimiter))
+                .Select(s => s.TrimEnd('/'))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToArray();
 
-           
-            foreach (var (attr, type) in Attributes)
+            return scheme =>
             {
-                var scheme = GetUriPathFormat(attr).ToArray();
+                var schemeArray = scheme as string[] ?? scheme.ToArray();
 
-                if (segments.Length != scheme.Length)
+                if (segments.Length != schemeArray.Length)
                 {
                     return null;
                 }
 
-                var placeholderValues = scheme
+                var placeholderValues = schemeArray
                     .Zip(segments, (s, s1) =>
                     {
                         if (s == s1)
@@ -95,49 +116,8 @@ namespace UriPathScanf
                     .Where(x => x != null)
                     .ToDictionary(x => x.Value.PropName.GetNameOfPlaceholderVariable(), x => x.Value.ExtractedValue);
 
-                if (placeholderValues.Any())
-                {
-                    return (type, placeholderValues);
-                }
-            }
-
-            return null;
+                return placeholderValues.Any() ? placeholderValues : null;
+            };
         }
-
-        /// <summary>
-        /// Gets URI path format from given attribute using format and names
-        /// </summary>
-        /// <param name="attr"></param>
-        /// <returns></returns>
-        protected virtual IEnumerable<string> GetUriPathFormat(UriPathAttribute attr)
-        {
-            using (var enumerator = attr.Names.GetEnumerator())
-            {
-                foreach (var v in attr.Format.Split(_uriPathConfiguration.Delimiter).Skip(1).Select((p, i) =>
-                {
-                    if (!p.IsPlaceholder()) return p;
-
-                    enumerator.MoveNext();
-
-                    return enumerator.Current.ToPlaceholderVariable();
-
-                }))
-                {
-                    yield return v;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets attributes from <see cref="UriPathConfiguration"/>
-        /// </summary>
-        /// <returns></returns>
-        protected IEnumerable<(UriPathAttribute, Type)> Attributes => _uriPathConfiguration.Attributes;
-
-        /// <summary>
-        /// Gets factories from <see cref="UriPathConfiguration"/>
-        /// </summary>
-        /// <returns></returns>
-        protected IReadOnlyDictionary<Type, Func<IDictionary<string, string>, object>> Factories => _uriPathConfiguration.Factories;
     }
 }

@@ -15,17 +15,14 @@ namespace UriPathScanf.Example
     {
         private static void Main(string[] args)
         {
-
-            var d = new UriPathConfiguration();
-            d.Add<ExampleDescriptor>();
-
-            var u = new UriPathScanf(i =>
+            var u = new UriPathScanf(new UriPathConfiguration(cfg =>
             {
-                i.Add<ExampleDescriptor>();
-               
-            });
+                cfg.Add<ExampleDescriptor>();
+                cfg.Add("/some/path2/{test}/x");
+            }));
 
-            var r = u.Scan<ExampleDescriptor>("https://xxx.com/some/path/55/x////");
+            //var r = u.Scan<ExampleDescriptor>("https://xxx.com/some/path/55/x////");
+            var r2 = u.ScanDyn("/////some///path2/55/x////");
         }
     }
 }

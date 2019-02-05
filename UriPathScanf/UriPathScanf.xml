@@ -54,54 +54,35 @@
             <returns></returns>
             <exception cref="T:UriPathScanf.Exceptions.ProvideUriPathAttributeException">Occurs when no attribute with URI path format is declared on the given model</exception>
         </member>
-        <member name="M:UriPathScanf.UriPathConfiguration.SetDelimiter(System.Char)">
+        <member name="M:UriPathScanf.UriPathConfiguration.Add(System.String)">
             <summary>
-            Set delimiter for URI paths. Default is "/"
+            Add format that can be resolved as dictionary.
             </summary>
-            <param name="delimiter"></param>
+            <param name="format"></param>
             <returns></returns>
-        </member>
-        <member name="P:UriPathScanf.UriPathConfiguration.Delimiter">
-            <summary>
-            Delimiter of the URI path
-            </summary>
         </member>
         <member name="T:UriPathScanf.UriPathScanf">
             <summary>
             URI path scanf utility
             </summary>
         </member>
-        <member name="M:UriPathScanf.UriPathScanf.#ctor(System.Action{UriPathScanf.UriPathConfiguration})">
+        <member name="F:UriPathScanf.UriPathScanf._uriPathConfiguration">
+            <summary>
+            Gets URI path configuration
+            </summary>
+        </member>
+        <member name="M:UriPathScanf.UriPathScanf.#ctor(UriPathScanf.UriPathConfiguration)">
             <summary>
             Create URI path scanf instance.
             </summary>
             <param name="configurationFactory">Configuration factory</param>
             <exception cref="T:System.ArgumentException">If no configuration factory provided</exception>
         </member>
-        <member name="M:UriPathScanf.UriPathScanf.Match(System.String)">
+        <member name="M:UriPathScanf.UriPathScanf.GetMatchChecker(System.String)">
             <summary>
-            Scan given URI path across registered descriptors
+            
             </summary>
             <param name="uriPath"></param>
-            <returns></returns>
-        </member>
-        <member name="M:UriPathScanf.UriPathScanf.GetUriPathFormat(UriPathScanf.UriPathAttribute)">
-            <summary>
-            Gets URI path format from given attribute using format and names
-            </summary>
-            <param name="attr"></param>
-            <returns></returns>
-        </member>
-        <member name="P:UriPathScanf.UriPathScanf.Attributes">
-            <summary>
-            Gets attributes from <see cref="T:UriPathScanf.UriPathConfiguration"/>
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:UriPathScanf.UriPathScanf.Factories">
-            <summary>
-            Gets factories from <see cref="T:UriPathScanf.UriPathConfiguration"/>
-            </summary>
             <returns></returns>
         </member>
     </members>

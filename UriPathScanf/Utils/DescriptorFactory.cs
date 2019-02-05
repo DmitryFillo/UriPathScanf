@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace UriPathScanf.Internal
+namespace UriPathScanf
 {
     internal static class DescriptorFactory
     {
@@ -41,7 +41,7 @@ namespace UriPathScanf.Internal
         private static MethodInfo GetPropertyValueMethod(Type propType) =>
             typeof(DescriptorFactory)
                 .GetTypeInfo()
-                .GetMethod(nameof(GetPropertyValue), BindingFlags.NonPublic)
+                .GetMethod(nameof(GetPropertyValue), BindingFlags.Static | BindingFlags.NonPublic)
                 .MakeGenericMethod(propType);
     }
 }

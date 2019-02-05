@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UriPathScanf.Internal;
 
 namespace UriPathScanf
 {
@@ -14,12 +13,12 @@ namespace UriPathScanf
         /// <summary>
         /// URI path format
         /// </summary>
-        public readonly string Format;
+        protected readonly string Format;
 
         /// <summary>
         /// Names of variable, should be the same as prop names in the model
         /// </summary>
-        public IEnumerable<string> Names { get; }
+        protected IEnumerable<string> Names { get; }
 
         /// <summary>
         /// <inheritdoc cref="UriPathAttribute"/>
@@ -30,6 +29,25 @@ namespace UriPathScanf
         {
             Format = uriPathFormat;
             Names = names;
+        }
+
+        public virtual IEnumerable<string> GetUriPathFormat()
+        {
+            using (var enumerator = Names.GetEnumerator())
+            {
+                foreach (var v in Format.Split('/').Skip(1).Select((p, i) =>
+                {
+                    if (!p.IsUnboundPlaceholder()) return p;
+
+                    enumerator.MoveNext();
+
+                    return enumerator.Current.ToPlaceholderVariable();
+
+                }))
+                {
+                    yield return v;
+                }
+            }
         }
     }
 }

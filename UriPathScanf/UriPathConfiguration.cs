@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UriPathScanf.Exceptions;
-using UriPathScanf.Internal;
 
 namespace UriPathScanf
 {
@@ -11,6 +10,15 @@ namespace UriPathScanf
     /// </summary>
     public class UriPathConfiguration
     {
+        public UriPathConfiguration()
+        {
+        }
+
+        public UriPathConfiguration(Action<UriPathConfiguration> cfg)
+        {
+            cfg(this);
+        }
+
         /// <summary>
         /// Add model to the configuration
         /// </summary>
@@ -29,35 +37,27 @@ namespace UriPathScanf
                     $"Your type {type.FullName} should have {nameof(UriPathAttribute)} to be allowed as model for {nameof(UriPathScanf)}");
             }
 
-            _attrs.Add((attr, type));
-            _factories.Add(type, DescriptorFactory.GetFactory<T>());
+            _attrs.Add((attr, type, DescriptorFactory.GetFactory<T>()));
 
             return this;
         }
 
         /// <summary>
-        /// Set delimiter for URI paths. Default is "/"
+        /// Add format that can be resolved as dictionary.
         /// </summary>
-        /// <param name="delimiter"></param>
+        /// <param name="format"></param>
         /// <returns></returns>
-        public UriPathConfiguration SetDelimiter(char delimiter)
+        public UriPathConfiguration Add(string format)
         {
-            Delimiter = delimiter;
-
+            _dynamicDeclaredFormats.Add(format);
             return this;
         }
+        
+        public IEnumerable<(UriPathAttribute, Type, Func<IDictionary<string, string>, object>)> Attributes => _attrs;
+        public IEnumerable<string> DynamicDeclaredFormats => _dynamicDeclaredFormats;
 
-        /// <summary>
-        /// Delimiter of the URI path
-        /// </summary>
-        public char Delimiter { get; private set; } = '/';
-
-        internal IReadOnlyDictionary<Type, Func<IDictionary<string, string>, object>> Factories => _factories;
-
-        internal IEnumerable<(UriPathAttribute, Type)> Attributes => _attrs;
-
-        private readonly IList<(UriPathAttribute, Type)> _attrs = new List<(UriPathAttribute, Type)>();
-        private readonly Dictionary<Type, Func<IDictionary<string, string>, object>> _factories = 
-            new Dictionary<Type, Func<IDictionary<string, string>, object>>();
+        private readonly ICollection<(UriPathAttribute, Type, Func<IDictionary<string, string>, object>)> _attrs =
+            new List<(UriPathAttribute, Type, Func<IDictionary<string, string>, object>)>();
+        private readonly ICollection<string> _dynamicDeclaredFormats = new List<string>();
     }
 }
