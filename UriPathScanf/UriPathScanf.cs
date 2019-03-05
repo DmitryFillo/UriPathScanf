@@ -74,13 +74,15 @@ namespace UriPathScanf
         /// <returns></returns>
         private static Func<IEnumerable<string>, IDictionary<string, string>> GetMatchChecker(string uriPath)
         {
-            // TODO: support relative paths
             var uri = new Uri(uriPath, UriKind.RelativeOrAbsolute);
 
             if (!uri.IsAbsoluteUri)
             {
                 uri = new Uri("http://_/" + uriPath);
             }
+
+            // TODO: add query string support
+            var query = uri.Query;
 
             var segments = uri
                 .Segments

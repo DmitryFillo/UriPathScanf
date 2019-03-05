@@ -24,7 +24,7 @@
             Marks model as fetchable from URI path
             </summary>
         </member>
-        <member name="F:UriPathScanf.UriPathAttribute.Format">
+        <member name="P:UriPathScanf.UriPathAttribute.Format">
             <summary>
             URI path format
             </summary>

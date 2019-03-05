@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UriPathScanf.Utils;
 
 namespace UriPathScanf
 {
@@ -13,7 +14,7 @@ namespace UriPathScanf
         /// <summary>
         /// URI path format
         /// </summary>
-        protected readonly string Format;
+        protected IList<string> Format { get; }
 
         /// <summary>
         /// Names of variable, should be the same as prop names in the model
@@ -27,7 +28,12 @@ namespace UriPathScanf
         /// <param name="names">Names params in the same order as in the format string</param>
         public UriPathAttribute(string uriPathFormat, params string[] names)
         {
-            Format = uriPathFormat;
+            if (string.IsNullOrEmpty(uriPathFormat))
+            {
+                throw new ArgumentException("You should provide URI path format!");
+            }
+
+            Format = uriPathFormat.Split('?');
             Names = names;
         }
 
@@ -35,15 +41,16 @@ namespace UriPathScanf
         {
             using (var enumerator = Names.GetEnumerator())
             {
-                foreach (var v in Format.Split('/').Skip(1).Select((p, i) =>
+                string ToPlaceholder(string p)
                 {
                     if (!p.IsUnboundPlaceholder()) return p;
-
+                    
                     enumerator.MoveNext();
 
                     return enumerator.Current.ToPlaceholderVariable();
+                }
 
-                }))
+                foreach (var v in Format[0].Split('/').Skip(1).Select(ToPlaceholder))
                 {
                     yield return v;
                 }
