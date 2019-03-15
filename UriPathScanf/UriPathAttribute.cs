@@ -30,13 +30,14 @@ namespace UriPathScanf
         {
             if (string.IsNullOrEmpty(uriPathFormat))
             {
-                throw new ArgumentException("You should provide URI path format!");
+                throw new ArgumentNullException($"You should provide {nameof(uriPathFormat)}");
             }
 
             Format = uriPathFormat.Split('?');
             Names = names;
         }
 
+        // TODO: part of uri path scanf?
         public virtual IEnumerable<string> GetUriPathFormat()
         {
             using (var enumerator = Names.GetEnumerator())
@@ -44,7 +45,7 @@ namespace UriPathScanf
                 string ToPlaceholder(string p)
                 {
                     if (!p.IsUnboundPlaceholder()) return p;
-                    
+
                     enumerator.MoveNext();
 
                     return enumerator.Current.ToPlaceholderVariable();

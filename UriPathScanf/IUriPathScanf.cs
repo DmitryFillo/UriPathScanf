@@ -8,6 +8,5 @@ namespace UriPathScanf
     {
         object Scan(string uriPath);
         T Scan<T>(string uriPath) where T : class;
-        IDictionary<string, string> ScanDyn(string uriPath);
     }
 }

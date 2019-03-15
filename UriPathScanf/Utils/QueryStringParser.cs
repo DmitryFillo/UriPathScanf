@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UriPathScanf.Utils
 {
-    public static class QueryStringParser
+    internal static class QueryStringParser
     {
         public static IDictionary<string, IEnumerable<string>> Parse(string qs)
         {

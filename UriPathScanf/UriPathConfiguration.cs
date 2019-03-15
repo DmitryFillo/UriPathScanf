@@ -41,23 +41,10 @@ namespace UriPathScanf
 
             return this;
         }
-
-        /// <summary>
-        /// Add format that can be resolved as dictionary.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public UriPathConfiguration Add(string format)
-        {
-            _dynamicDeclaredFormats.Add(format);
-            return this;
-        }
-        
+       
         public IEnumerable<(UriPathAttribute, Type, Func<IDictionary<string, string>, object>)> Attributes => _attrs;
-        public IEnumerable<string> DynamicDeclaredFormats => _dynamicDeclaredFormats;
 
         private readonly ICollection<(UriPathAttribute, Type, Func<IDictionary<string, string>, object>)> _attrs =
             new List<(UriPathAttribute, Type, Func<IDictionary<string, string>, object>)>();
-        private readonly ICollection<string> _dynamicDeclaredFormats = new List<string>();
     }
 }

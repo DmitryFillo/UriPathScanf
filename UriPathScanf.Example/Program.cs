@@ -25,7 +25,6 @@ namespace UriPathScanf.Example
             var u = new UriPathScanf(new UriPathConfiguration(cfg =>
             {
                 cfg.Add<ExampleDescriptor>();
-                cfg.Add("/some/path2/{test}/x");
                 cfg.Add<ExampleDescriptorQuery>();
             }));
 

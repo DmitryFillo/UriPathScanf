@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UriPathScanf.Utils;
 
 namespace UriPathScanf
 {
@@ -47,6 +48,7 @@ namespace UriPathScanf
 
             foreach (var (attr, type, fac) in _uriPathConfiguration.Attributes)
             {
+                // TODO: move this to the configuration
                 var scheme = attr.GetUriPathFormat();
 
                 var result = checker(scheme);
@@ -55,15 +57,6 @@ namespace UriPathScanf
             }
 
             return null;
-        }
-
-        public IDictionary<string, string> ScanDyn(string uriPath)
-        {
-            var checker = GetMatchChecker(uriPath);
-
-            return _uriPathConfiguration.DynamicDeclaredFormats.Select(format => format.Split('/').Skip(1))
-                .Select(scheme => checker(scheme))
-                .FirstOrDefault();
         }
 
         // TODO: query string
@@ -81,8 +74,7 @@ namespace UriPathScanf
                 uri = new Uri("http://_/" + uriPath);
             }
 
-            // TODO: add query string support
-            var query = uri.Query;
+            var queryParams = QueryStringParser.Parse(uri.Query);
 
             var segments = uri
                 .Segments
